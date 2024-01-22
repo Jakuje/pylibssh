@@ -675,83 +675,28 @@ jobs:
           !fromJSON(needs.pre-setup.outputs.is-untagged-devel)
           && !fromJSON(needs.pre-setup.outputs.release-requested)
         ) && 'test' || ''
-      }}] manylinux
+      }}] manylinux [tested]
     needs:
     - build-src
     - pre-setup  # transitive, for accessing settings
-    strategy:
-      matrix:
-        manylinux-python-target:
-        # NOTE: Must be from this list:
-        # NOTE: $ podman run -it --rm \
-        # NOTE:   quay.io/pypa/manylinux2014_x86_64 \
-        # NOTE:   ls -1 /opt/python
-        - cp38-cp38
-        - cp39-cp39
-        - cp310-cp310
-        - cp311-cp311
-        - cp312-cp312
-        manylinux-year-target:
-        - 2014
-        - _2_24
-        - _2_28
-        manylinux-image-target:
-        # NOTE: Keep in sync with `build-manylinux-container-images.yml`.
-        # NOTE: Ordered from "heavy" to "fast".
-        - arch: x86_64
-          qemu_arch: amd64
-        include:
-        # NOTE: manylinux2010 only on x86_64
-        - manylinux-python-target: cp38-cp38
-          manylinux-image-target:
-            arch: x86_64
-            qemu_arch: amd64
-          manylinux-year-target: 2010
-        - manylinux-python-target: cp39-cp39
-          manylinux-image-target:
-            arch: x86_64
-            qemu_arch: amd64
-          manylinux-year-target: 2010
-        - manylinux-python-target: cp310-cp310
-          manylinux-image-target:
-            arch: x86_64
-            qemu_arch: amd64
-          manylinux-year-target: 2010
-        # NOTE: manylinux1 caps out at Python 3.9
-        - manylinux-python-target: cp38-cp38
-          manylinux-image-target:
-            arch: x86_64
-            qemu_arch: amd64
-          manylinux-year-target: 1
-        - manylinux-python-target: cp39-cp39
-          manylinux-image-target:
-            arch: x86_64
-            qemu_arch: amd64
-          manylinux-year-target: 1
-        exclude:
-        # NOTE: cp312-cp312 unavailable before _2_28
-        - manylinux-python-target: cp312-cp312
-          manylinux-year-target: 2014
-        - manylinux-python-target: cp312-cp312
-          manylinux-year-target: _2_24
-
-    uses: ./.github/workflows/reusable-build-wheel.yml
+    uses: ./.github/workflows/reusable-cibuildwheel.yml
     with:
-      # qemu: ${{ matrix.qemu }}
+      os: ubuntu-latest
+      wheel-tags-to-skip: >-
+        *_i686
+        *-musllinux_*
+        *-*linux_{aarch64,ppc64le,s390x}
+        pp*
       source-tarball-name: >-
         ${{ needs.pre-setup.outputs.sdist-artifact-name }}
       dists-artifact-name: >-
         ${{ needs.pre-setup.outputs.dists-artifact-name }}
-      wheel-artifact-name: ${{ needs.pre-setup.outputs.wheel-artifact-name }}
-      cache-key-files: ${{ needs.pre-setup.outputs.cache-key-files }}
-      release-requested: >-
-        ${{ needs.pre-setup.outputs.release-requested }}
-      manylinux-python-target: ${{ matrix.manylinux-python-target }}
-      manylinux-year-target: ${{ matrix.manylinux-year-target }}
-      manylinux-image-target-arch: >-
-        ${{ matrix.manylinux-image-target.arch }}
-      manylinux-image-target-qemu-arch: >-
-        ${{ matrix.manylinux-image-target.qemu_arch }}
+      cython-tracing: >-  # Cython line tracing for coverage collection
+        ${{
+          fromJSON(needs.pre-setup.outputs.profiling-enabled)
+          && 'true'
+          || 'false'
+        }}
 
   build-bin-manylinux-odd-arches:
     name: >-
@@ -767,57 +712,29 @@ jobs:
           !fromJSON(needs.pre-setup.outputs.is-untagged-devel)
           && !fromJSON(needs.pre-setup.outputs.release-requested)
         ) && 'test' || ''
-      }}] manylinux
+      }}] manylinux [odd]
     needs:
     - build-src
     - pre-setup  # transitive, for accessing settings
-    strategy:
-      matrix:
-        manylinux-python-target:
-        # NOTE: Must be from this list:
-        # NOTE: $ podman run -it --rm \
-        # NOTE:   quay.io/pypa/manylinux2014_x86_64 \
-        # NOTE:   ls -1 /opt/python
-        - cp38-cp38
-        - cp39-cp39
-        - cp310-cp310
-        - cp311-cp311
-        - cp312-cp312
-        manylinux-year-target:
-        - 2014
-        - _2_24
-        - _2_28
-        manylinux-image-target:
-        # NOTE: Keep in sync with `build-manylinux-container-images.yml`.
-        # NOTE: Ordered from "heavy" to "fast".
-        - arch: aarch64
-          qemu_arch: arm64
-        - arch: s390x
-        - arch: ppc64le
-        exclude:
-        # NOTE: cp312-cp312 unavailable before _2_28
-        - manylinux-python-target: cp312-cp312
-          manylinux-year-target: 2014
-        - manylinux-python-target: cp312-cp312
-          manylinux-year-target: _2_24
-
-    uses: ./.github/workflows/reusable-build-wheel.yml
+    uses: ./.github/workflows/reusable-cibuildwheel.yml
     with:
-      # qemu: ${{ matrix.qemu }}
+      os: ubuntu-latest
+      wheel-tags-to-skip: >-
+        *_i686
+        *-musllinux_*
+        *-*linux_x86_64
+        pp*
       source-tarball-name: >-
         ${{ needs.pre-setup.outputs.sdist-artifact-name }}
       dists-artifact-name: >-
         ${{ needs.pre-setup.outputs.dists-artifact-name }}
-      wheel-artifact-name: ${{ needs.pre-setup.outputs.wheel-artifact-name }}
-      cache-key-files: ${{ needs.pre-setup.outputs.cache-key-files }}
-      release-requested: >-
-        ${{ needs.pre-setup.outputs.release-requested }}
-      manylinux-python-target: ${{ matrix.manylinux-python-target }}
-      manylinux-year-target: ${{ matrix.manylinux-year-target }}
-      manylinux-image-target-arch: >-
-        ${{ matrix.manylinux-image-target.arch }}
-      manylinux-image-target-qemu-arch: >-
-        ${{ matrix.manylinux-image-target.qemu_arch }}
+      qemu: all
+      cython-tracing: >-  # Cython line tracing for coverage collection
+        ${{
+          fromJSON(needs.pre-setup.outputs.profiling-enabled)
+          && 'true'
+          || 'false'
+        }}
 
   build-src:
     name: >-
