@@ -21,6 +21,7 @@ from cpython.bytes cimport PyBytes_AS_STRING
 
 from pylibsshext.channel import Channel
 from pylibsshext.errors cimport LibsshSessionException
+from pylibsshext.logging import _initialize_logging, _set_level
 from pylibsshext.scp import SCP
 from pylibsshext.sftp import SFTP
 
@@ -44,15 +45,6 @@ OPTS_MAP = {
 OPTS_DIR_MAP = {
     "ssh_dir": libssh.SSH_OPTIONS_SSH_DIR,
     "add_identity": libssh.SSH_OPTIONS_ADD_IDENTITY,
-}
-
-LOG_MAP = {
-    logging.NOTSET: libssh.SSH_LOG_NONE,
-    logging.DEBUG: libssh.SSH_LOG_DEBUG,
-    logging.INFO: libssh.SSH_LOG_INFO,
-    logging.WARNING: libssh.SSH_LOG_WARN,
-    logging.ERROR: libssh.SSH_LOG_WARN,
-    logging.CRITICAL: libssh.SSH_LOG_TRACE
 }
 
 KNOW_HOST_MSG_MAP = {
@@ -114,6 +106,8 @@ cdef class Session(object):
         # the callbacks to be around even after we free the underlying channels so
         # we should free them only when we terminate the session.
         self._channel_callbacks = []
+        _initialize_logging()
+        _set_level(logging.NOTSET)
 
     def __cinit__(self, host=None, **kwargs):
         self._libssh_session = libssh.ssh_new()
@@ -541,12 +535,7 @@ cdef class Session(object):
         return SFTP(self)
 
     def set_log_level(self, level):
-        if level in LOG_MAP.keys():
-            rc = libssh.ssh_set_log_level(LOG_MAP[level])
-            if rc != libssh.SSH_OK:
-                raise LibsshSessionException("Failed to set log level [%d] with error [%d]" % (level, rc))
-        else:
-            raise LibsshSessionException("Invalid log level [%d]" % level)
+        _set_level(level)
 
     def close(self):
         if self._libssh_session is not NULL:
