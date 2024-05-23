@@ -15,12 +15,14 @@
 # License along with this library; if not, see file LICENSE.rst in this
 # repository.
 import inspect
-import logging
 
 from cpython.bytes cimport PyBytes_AS_STRING
 
 from pylibsshext.channel import Channel
+
 from pylibsshext.errors cimport LibsshSessionException
+
+from pylibsshext.logging import set_level
 from pylibsshext.scp import SCP
 from pylibsshext.sftp import SFTP
 
@@ -42,15 +44,6 @@ OPTS_MAP = {
 OPTS_DIR_MAP = {
     "ssh_dir": libssh.SSH_OPTIONS_SSH_DIR,
     "add_identity": libssh.SSH_OPTIONS_ADD_IDENTITY,
-}
-
-LOG_MAP = {
-    logging.NOTSET: libssh.SSH_LOG_NONE,
-    logging.DEBUG: libssh.SSH_LOG_DEBUG,
-    logging.INFO: libssh.SSH_LOG_INFO,
-    logging.WARNING: libssh.SSH_LOG_WARN,
-    logging.ERROR: libssh.SSH_LOG_WARN,
-    logging.CRITICAL: libssh.SSH_LOG_TRACE
 }
 
 KNOW_HOST_MSG_MAP = {
@@ -334,6 +327,7 @@ cdef class Session(object):
         if rc != libssh.SSH_OK:
             return
 
+        # FIXME The SHA1 hashes are non-standard -- the most common these days are SHA256 hashes for fingerprints
         rc = libssh.ssh_get_publickey_hash(srv_pubkey, libssh.SSH_PUBLICKEY_HASH_SHA1, &hash, &hash_len)
 
         cdef libssh.ssh_keytypes_e key_type = libssh.ssh_key_type(srv_pubkey)
@@ -520,12 +514,7 @@ cdef class Session(object):
         return SFTP(self)
 
     def set_log_level(self, level):
-        if level in LOG_MAP.keys():
-            rc = libssh.ssh_set_log_level(LOG_MAP[level])
-            if rc != libssh.SSH_OK:
-                raise LibsshSessionException("Failed to set log level [%d] with error [%d]" % (level, rc))
-        else:
-            raise LibsshSessionException("Invalid log level [%d]" % level)
+        set_level(level)
 
     def close(self):
         if self._libssh_session is not NULL:

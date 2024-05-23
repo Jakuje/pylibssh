@@ -127,3 +127,10 @@ cdef extern from "libssh/callbacks.h":
     ctypedef ssh_channel_callbacks_struct * ssh_channel_callbacks
 
     int ssh_set_channel_callbacks(ssh_channel channel, ssh_channel_callbacks cb)
+
+    ctypedef void(*ssh_logging_callback)(
+        int priority,
+        const char *function,
+        const char *buffer,
+        void *userdata)
+    int ssh_set_log_callback(ssh_logging_callback cb)
