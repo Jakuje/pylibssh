@@ -1,0 +1,1 @@
+Bumped the libssh version to latest release 0.11.1 in manylinux -- by :user:`Jakuje`.
