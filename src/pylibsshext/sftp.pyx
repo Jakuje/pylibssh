@@ -100,7 +100,7 @@ cdef class SFTP:
                 raise LibsshSFTPException("Reading data from remote file [%s] failed with error [%s]"
                                           % (remote_file, self._get_sftp_error_str()))
 
-            with open(local_file, 'wb+') as f:
+            with open(local_file, 'ab') as f:
                 bytes_written = f.write(read_buffer[:file_data])
                 if bytes_written and file_data != bytes_written:
                     sftp.sftp_close(rf)
