@@ -2,6 +2,8 @@
 
 """Tests suite for sftp."""
 
+import random
+import string
 import uuid
 
 import pytest
@@ -63,3 +65,41 @@ def test_get(dst_path, src_path, sftp_session, transmit_payload):
     """Check that SFTP file download works."""
     sftp_session.get(str(src_path), str(dst_path))
     assert dst_path.read_bytes() == transmit_payload
+
+
+@pytest.fixture
+def large_payload():
+    """
+    Generate a large 255 * 1024 + 1 B test payload.
+
+    The OpenSSH SFTP server supports maximum reads and writes of 256 * 1024 - 1024 B per request.
+    """
+    random_char_kilobyte = [ord(random.choice(string.printable)) for _ in range(1024)]
+    full_bytes_number = 255
+    a_255kB_chunk = bytes(random_char_kilobyte * full_bytes_number)
+    the_last_byte = random.choice(random_char_kilobyte).to_bytes(length=1, byteorder='big')
+    return a_255kB_chunk + the_last_byte
+
+
+@pytest.fixture
+def src_path_large(tmp_path, large_payload):
+    """Return a remote path to a 255kB + 1B sized file.
+
+    The openssh max read/write chunk size is 255kB so the test needs
+    a file that would execute at least two loops.
+    """
+    path = tmp_path / 'large.txt'
+    path.write_bytes(large_payload)
+    return path
+
+
+def test_put_large(dst_path, src_path_large, sftp_session, large_payload):
+    """Check that SFTP can upload large file."""
+    sftp_session.put(str(src_path_large), str(dst_path))
+    assert dst_path.read_bytes() == large_payload
+
+
+def test_get_large(dst_path, src_path_large, sftp_session, large_payload):
+    """Check that SFTP can download large file."""
+    sftp_session.get(str(src_path_large), str(dst_path))
+    assert dst_path.read_bytes() == large_payload
