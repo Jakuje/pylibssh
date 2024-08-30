@@ -87,6 +87,12 @@ def src_path_large(tmp_path, large_payload):
     return path
 
 
+def test_put_large(dst_path, src_path_large, sftp_session, large_payload):
+    """Check that SFTP can upload large file."""
+    sftp_session.put(str(src_path_large), str(dst_path))
+    assert dst_path.read_bytes() == large_payload
+
+
 def test_get_large(dst_path, src_path_large, sftp_session, large_payload):
     """Check that SFTP can download large file."""
     sftp_session.get(str(src_path_large), str(dst_path))
