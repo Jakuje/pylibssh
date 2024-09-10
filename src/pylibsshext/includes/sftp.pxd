@@ -55,5 +55,32 @@ cdef extern from "libssh/sftp.h" nogil:
     ssize_t sftp_read(sftp_file file, const void *buf, size_t count)
     int sftp_get_error(sftp_session sftp)
 
+    struct sftp_attributes_struct:
+        char *name
+        char *longname
+        unsigned int flags
+        unsigned int type
+        unsigned int size
+        # ...
+    ctypedef sftp_attributes_struct * sftp_attributes
+    sftp_attributes sftp_stat(sftp_session session, const char *path)
+
+    struct sftp_aio_struct:
+        pass
+    ctypedef sftp_aio_struct * sftp_aio
+    ssize_t sftp_aio_begin_read(sftp_file file, size_t len, sftp_aio *aio)
+    ssize_t sftp_aio_wait_read(sftp_aio *aio, void *buf, size_t buf_size)
+    ssize_t sftp_aio_begin_write(sftp_file file, const void *buf, size_t len, sftp_aio *aio)
+    ssize_t sftp_aio_wait_write(sftp_aio *aio)
+    void sftp_aio_free(sftp_aio aio)
+
+    struct sftp_limits_struct:
+        unsigned int max_packet_length
+        unsigned int max_read_length
+        unsigned int max_write_length
+        unsigned int max_open_handles
+    ctypedef sftp_limits_struct * sftp_limits_t
+    sftp_limits_t sftp_limits(sftp_session sftp)
+
 cdef extern from "sys/stat.h" nogil:
     cdef int S_IRWXU
