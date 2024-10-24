@@ -16,8 +16,8 @@
 # repository.
 
 import os
-
 from collections import deque
+
 from posix.fcntl cimport O_CREAT, O_RDONLY, O_TRUNC, O_WRONLY
 
 from cpython.bytes cimport PyBytes_AS_STRING
