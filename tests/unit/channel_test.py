@@ -33,19 +33,25 @@ def ssh_channel(ssh_client_session):
         chan.close()
 
 
-@pytest.mark.xfail(
-    reason='This test causes SEGFAULT, flakily. '
-    'Ref: https://github.com/ansible/pylibssh/issues/57',
-    strict=False,
-)
 @pytest.mark.forked
+def exec_second_command(ssh_channel):
+    """Check the standard output of ``exec_command()`` as a string."""
+    u_cmd_out = ssh_channel.exec_command('echo -n Hello Again').stdout.decode()
+    assert u_cmd_out == u'Hello Again'  # noqa: WPS302
+
+
 def test_exec_command(ssh_channel):
     """Test getting the output of a remotely executed command."""
     u_cmd_out = ssh_channel.exec_command('echo -n Hello World').stdout.decode()
     assert u_cmd_out == u'Hello World'  # noqa: WPS302
     # Test that repeated calls to exec_command do not segfault.
-    u_cmd_out = ssh_channel.exec_command('echo -n Hello Again').stdout.decode()
-    assert u_cmd_out == u'Hello Again'  # noqa: WPS302
+
+    # NOTE: Call `exec_command()` once again from another function to
+    # NOTE: force it to happen in another place of the call stack,
+    # NOTE: making sure that the context is different from one in this
+    # NOTE: this test function. The resulting call stack will end up
+    # NOTE: being more random.
+    exec_second_command(ssh_channel)
 
 
 def test_double_close(ssh_channel):
