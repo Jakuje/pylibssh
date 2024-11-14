@@ -23,3 +23,7 @@ cdef class Channel:
     cdef  _session
     cdef libssh.ssh_channel _libssh_channel
     cdef libssh.ssh_session _libssh_session
+
+cdef class ChannelCallback:
+    cdef callbacks.ssh_channel_callbacks_struct callback
+    cdef _userdata

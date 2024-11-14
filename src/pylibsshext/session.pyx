@@ -107,6 +107,10 @@ cdef class Session(object):
         self._hash_py = None
         self._fingerprint_py = None
         self._keytype_py = None
+        # Due to delayed freeing of channels, some older libssh versions might expect
+        # the callbacks to be around even after we free the underlying channels so
+        # we should free them only when we terminate the session.
+        self._channel_callbacks = []
 
     def __cinit__(self, host=None, **kwargs):
         self._libssh_session = libssh.ssh_new()
@@ -122,6 +126,9 @@ cdef class Session(object):
                 libssh.ssh_disconnect(self._libssh_session)
             libssh.ssh_free(self._libssh_session)
             self._libssh_session = NULL
+
+    def push_callback(self, callback):
+        self._channel_callbacks.append(callback)
 
     @property
     def port(self):
