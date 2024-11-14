@@ -45,6 +45,16 @@ cdef int _process_outputs(libssh.ssh_session session,
         result.stdout += data_b
     return len
 
+cdef class ChannelCallback:
+    def __cinit__(self):
+        memset(&self.callback, 0, sizeof(self.callback))
+        callbacks.ssh_callbacks_init(&self.callback)
+        self.callback.channel_data_function = <callbacks.ssh_channel_data_callback>&_process_outputs
+
+    def set_user_data(self, userdata):
+        self._userdata = userdata
+        self.callback.userdata = <void *>self._userdata
+
 cdef class Channel:
     def __cinit__(self, session):
         self._session = session
@@ -166,12 +176,12 @@ cdef class Channel:
             raise LibsshChannelException("Failed to execute command [{0}]: [{1}]".format(command, rc))
         result = CompletedProcess(args=command, returncode=-1, stdout=b'', stderr=b'')
 
-        cdef callbacks.ssh_channel_callbacks_struct cb
-        memset(&cb, 0, sizeof(cb))
-        cb.channel_data_function = <callbacks.ssh_channel_data_callback>&_process_outputs
-        cb.userdata = <void *>result
-        callbacks.ssh_callbacks_init(&cb)
-        callbacks.ssh_set_channel_callbacks(channel, &cb)
+        cb = ChannelCallback()
+        cb.set_user_data(result)
+        callbacks.ssh_set_channel_callbacks(channel, &cb.callback)
+
+        # keep the callback around in the session object to avoid use after free
+        self._session.push_callback(cb)
 
         libssh.ssh_channel_send_eof(channel)
         result.returncode = libssh.ssh_channel_get_exit_status(channel)
