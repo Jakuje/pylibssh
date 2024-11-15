@@ -89,6 +89,12 @@ def test_get_existing(dst_exists_path, src_path, sftp_session, transmit_payload)
     assert dst_exists_path.read_bytes() == transmit_payload
 
 
+def test_put_existing(dst_exists_path, src_path, sftp_session, transmit_payload):
+    """Check that SFTP file download works when target file exists."""
+    sftp_session.put(str(src_path), str(dst_exists_path))
+    assert dst_exists_path.read_bytes() == transmit_payload
+
+
 @pytest.fixture
 def large_payload():
     """Generate a large 1025 byte (1024 + 1B) test payload."""
