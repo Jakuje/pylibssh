@@ -89,18 +89,19 @@ cdef class SFTP:
 
         rf = sftp.sftp_open(self._libssh_sftp_session, remote_file_b, O_RDONLY, sftp.S_IRWXU)
         if rf is NULL:
-            raise LibsshSFTPException("Opening remote file [%s] for read failed with error [%s]" % (remote_file, self._get_sftp_error_str()))
+            raise LibsshSFTPException("Opening remote file [%s] for read failed with error [%s]"
+                                      % (remote_file, self._get_sftp_error_str()))
 
-        while True:
-            file_data = sftp.sftp_read(rf, <void *>read_buffer, sizeof(char) * 1024)
-            if file_data == 0:
-                break
-            elif file_data < 0:
-                sftp.sftp_close(rf)
-                raise LibsshSFTPException("Reading data from remote file [%s] failed with error [%s]"
-                                          % (remote_file, self._get_sftp_error_str()))
+        with open(local_file, 'wb') as f:
+            while True:
+                file_data = sftp.sftp_read(rf, <void *>read_buffer, sizeof(char) * 1024)
+                if file_data == 0:
+                    break
+                elif file_data < 0:
+                    sftp.sftp_close(rf)
+                    raise LibsshSFTPException("Reading data from remote file [%s] failed with error [%s]"
+                                              % (remote_file, self._get_sftp_error_str()))
 
-            with open(local_file, 'ab') as f:
                 bytes_written = f.write(read_buffer[:file_data])
                 if bytes_written and file_data != bytes_written:
                     sftp.sftp_close(rf)
