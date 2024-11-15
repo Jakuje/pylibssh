@@ -50,6 +50,21 @@ def dst_path(file_paths_pair):
     return path
 
 
+@pytest.fixture
+def other_payload():
+    """Generate a binary test payload."""
+    uuid_name = uuid.uuid4()
+    return 'Original content: {name!s}'.format(name=uuid_name).encode()
+
+
+@pytest.fixture
+def pre_existing_dst_path(dst_path, other_payload):
+    """Return a data destination path."""
+    dst_path.write_bytes(other_payload)
+    assert dst_path.exists()
+    return dst_path
+
+
 def test_make_sftp(sftp_session):
     """Smoke-test SFTP instance creation."""
     assert sftp_session
@@ -65,6 +80,12 @@ def test_get(dst_path, src_path, sftp_session, transmit_payload):
     """Check that SFTP file download works."""
     sftp_session.get(str(src_path), str(dst_path))
     assert dst_path.read_bytes() == transmit_payload
+
+
+def test_get_existing(pre_existing_dst_path, src_path, sftp_session, transmit_payload):
+    """Check that SFTP file download works when target file exists."""
+    sftp_session.get(str(src_path), str(pre_existing_dst_path))
+    assert pre_existing_dst_path.read_bytes() == transmit_payload
 
 
 @pytest.fixture
