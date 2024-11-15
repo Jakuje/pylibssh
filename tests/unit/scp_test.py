@@ -120,3 +120,9 @@ def test_get_large(dst_path, src_path_large, ssh_scp, large_payload):
     """Check that SCP file download gets over 64kB of data."""
     ssh_scp.get(str(src_path_large), str(dst_path))
     assert dst_path.read_bytes() == large_payload
+
+
+def test_put_large(dst_path, src_path_large, ssh_scp, large_payload):
+    """Check that SCP file download gets over 64kB of data."""
+    ssh_scp.put(str(src_path_large), str(dst_path))
+    assert dst_path.read_bytes() == large_payload
