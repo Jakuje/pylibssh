@@ -97,17 +97,19 @@ def test_put_existing(dst_exists_path, src_path, sftp_session, transmit_payload)
 
 @pytest.fixture
 def large_payload():
-    """Generate a large 1025 byte (1024 + 1B) test payload."""
-    payload_len = 1024 + 1
-    random_bytes = [ord(random.choice(string.printable)) for _ in range(payload_len)]
-    return bytes(random_bytes)
+    """Generate a large 32769 byte (32kB + 1B) test payload."""
+    random_char_kilobyte = [ord(random.choice(string.printable)) for _ in range(1024)]
+    full_bytes_number = 32
+    a_32kB_chunk = bytes(random_char_kilobyte * full_bytes_number)
+    the_last_byte = random.choice(random_char_kilobyte).to_bytes(length=1, byteorder='big')
+    return a_32kB_chunk + the_last_byte
 
 
 @pytest.fixture
 def src_path_large(tmp_path, large_payload):
-    """Return a remote path to a 1025 byte-sized file.
+    """Return a remote path to a 32769 byte-sized file.
 
-    The pylibssh chunk size is 1024 so the test needs a file that would
+    The pylibssh chunk size is 32769 so the test needs a file that would
     execute at least two loops.
     """
     path = tmp_path / 'large.txt'
