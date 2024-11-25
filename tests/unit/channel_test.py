@@ -36,14 +36,16 @@ def ssh_channel(ssh_client_session):
 @pytest.mark.forked
 def exec_second_command(ssh_channel):
     """Check the standard output of ``exec_command()`` as a string."""
-    u_cmd_out = ssh_channel.exec_command('echo -n Hello Again').stdout.decode()
-    assert u_cmd_out == u'Hello Again'  # noqa: WPS302
+    u_cmd = ssh_channel.exec_command('echo -n Hello Again')
+    assert u_cmd.returncode == 0
+    assert u_cmd.stdout.decode() == u'Hello Again'  # noqa: WPS302
 
 
 def test_exec_command(ssh_channel):
     """Test getting the output of a remotely executed command."""
-    u_cmd_out = ssh_channel.exec_command('echo -n Hello World').stdout.decode()
-    assert u_cmd_out == u'Hello World'  # noqa: WPS302
+    u_cmd = ssh_channel.exec_command('echo -n Hello World')
+    assert u_cmd.returncode == 0
+    assert u_cmd.stdout.decode() == u'Hello World'  # noqa: WPS302
     # Test that repeated calls to exec_command do not segfault.
 
     # NOTE: Call `exec_command()` once again from another function to
