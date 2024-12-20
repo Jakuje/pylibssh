@@ -187,7 +187,6 @@ def sshd_addr(free_port_num, ssh_authorized_keys_path, sshd_hostkey_path, sshd_p
         opt, 'StrictModes=no',
         opt, 'PermitEmptyPasswords=yes',
         opt, 'PermitRootLogin=yes',
-        opt, 'Protocol=2',
         opt, 'HostbasedAuthentication=no',
         opt, 'IgnoreUserKnownHosts=yes',
         opt, 'Port={port:d}'.format(port=free_port_num),  # port before addr
