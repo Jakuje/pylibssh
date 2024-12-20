@@ -173,6 +173,7 @@ def sshd_addr(free_port_num, ssh_authorized_keys_path, sshd_hostkey_path, sshd_p
         '/usr/sbin/sshd',
         '-D',
         '-f', '/dev/null',
+        '-E', '/dev/stderr',
         opt, 'LogLevel=DEBUG3',
         opt, 'HostKey={key!s}'.format(key=sshd_hostkey_path),
         opt, 'PidFile={pid!s}'.format(pid=sshd_path / 'sshd.pid'),
