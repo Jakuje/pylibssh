@@ -38,6 +38,7 @@ def exec_second_command(ssh_channel):
     """Check the standard output of ``exec_command()`` as a string."""
     u_cmd = ssh_channel.exec_command('echo -n Hello Again')
     assert u_cmd.returncode == 0
+    assert u_cmd.stderr.decode() == ''  # noqa: WPS302
     assert u_cmd.stdout.decode() == u'Hello Again'  # noqa: WPS302
 
 
@@ -45,6 +46,7 @@ def test_exec_command(ssh_channel):
     """Test getting the output of a remotely executed command."""
     u_cmd = ssh_channel.exec_command('echo -n Hello World')
     assert u_cmd.returncode == 0
+    assert u_cmd.stderr.decode() == ''
     assert u_cmd.stdout.decode() == u'Hello World'  # noqa: WPS302
     # Test that repeated calls to exec_command do not segfault.
 
