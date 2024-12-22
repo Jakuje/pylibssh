@@ -3,6 +3,7 @@
 
 """Pytest plugins and fixtures configuration."""
 
+import logging
 import shutil
 import socket
 import subprocess
@@ -115,6 +116,8 @@ def ssh_client_session(ssh_session_connect):
     # noqa: DAR101
     """
     ssh_session = Session()
+    # TODO Adjust when #597 will be merged
+    ssh_session.set_log_level(logging.CRITICAL)
     ssh_session_connect(ssh_session)
     try:  # noqa: WPS501
         yield ssh_session
