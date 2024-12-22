@@ -183,6 +183,10 @@ cdef class Channel:
         # keep the callback around in the session object to avoid use after free
         self._session.push_callback(cb)
 
+        # wait before remote writes all data before closing the channel
+        while not libssh.ssh_channel_is_eof(channel):
+            libssh.ssh_channel_poll(channel, 0)
+
         libssh.ssh_channel_send_eof(channel)
         result.returncode = libssh.ssh_channel_get_exit_status(channel)
         if channel is not NULL:
