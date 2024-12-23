@@ -169,19 +169,19 @@ cdef class Channel:
             libssh.ssh_channel_free(channel)
             raise LibsshChannelException("Failed to open_session: [{0}]".format(rc))
 
-        rc = libssh.ssh_channel_request_exec(channel, command.encode("utf-8"))
-        if rc != libssh.SSH_OK:
-            libssh.ssh_channel_close(channel)
-            libssh.ssh_channel_free(channel)
-            raise LibsshChannelException("Failed to execute command [{0}]: [{1}]".format(command, rc))
         result = CompletedProcess(args=command, returncode=-1, stdout=b'', stderr=b'')
 
         cb = ChannelCallback()
         cb.set_user_data(result)
         callbacks.ssh_set_channel_callbacks(channel, &cb.callback)
-
         # keep the callback around in the session object to avoid use after free
         self._session.push_callback(cb)
+
+        rc = libssh.ssh_channel_request_exec(channel, command.encode("utf-8"))
+        if rc != libssh.SSH_OK:
+            libssh.ssh_channel_close(channel)
+            libssh.ssh_channel_free(channel)
+            raise LibsshChannelException("Failed to execute command [{0}]: [{1}]".format(command, rc))
 
         # wait before remote writes all data before closing the channel
         while not libssh.ssh_channel_is_eof(channel):
