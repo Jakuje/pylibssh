@@ -58,6 +58,14 @@ def test_exec_command(ssh_channel):
     exec_second_command(ssh_channel)
 
 
+def test_exec_command_stderr(ssh_channel):
+    """Test getting the stderr of a remotely executed command."""
+    u_cmd = ssh_channel.exec_command('echo -n Hello World 1>&2')
+    assert u_cmd.returncode == 0
+    assert u_cmd.stderr.decode() == u'Hello World'  # noqa: WPS302
+    assert u_cmd.stdout.decode() == ''
+
+
 def test_double_close(ssh_channel):
     """Test that closing the channel multiple times doesn't explode."""
     for _ in range(3):  # noqa: WPS122
