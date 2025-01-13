@@ -165,7 +165,7 @@ jobs:
         ${{ steps.changelog-draft-name.outputs.filename-base }}.rst
     steps:
     - name: Switch to using Python 3.11 by default
-      uses: actions/setup-python@v5.1.1
+      uses: actions/setup-python@v5.3.0
       with:
         python-version: 3.11
     - name: >-
@@ -438,7 +438,7 @@ jobs:
 
     steps:
     - name: Switch to using Python 3.11
-      uses: actions/setup-python@v5.1.1
+      uses: actions/setup-python@v5.3.0
       with:
         python-version: 3.11
 
@@ -861,7 +861,7 @@ jobs:
 
     steps:
     - name: Switch to using Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5.1.1
+      uses: actions/setup-python@v5.3.0
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -1398,7 +1398,7 @@ jobs:
 
     steps:
     - name: Switch to using Python 3.11 by default
-      uses: actions/setup-python@v5.1.1
+      uses: actions/setup-python@v5.3.0
       with:
         python-version: 3.11
 
@@ -1899,7 +1899,7 @@ jobs:
         path: dist/
 
     - name: Switch to Python 3.11
-      uses: actions/setup-python@v5.1.1
+      uses: actions/setup-python@v5.3.0
       with:
         python-version: 3.11
     - name: >-
