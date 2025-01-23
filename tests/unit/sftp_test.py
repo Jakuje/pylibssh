@@ -20,11 +20,21 @@ def sftp_session(ssh_client_session):
         del sftp_sess  # noqa: WPS420
 
 
-@pytest.fixture
-def transmit_payload():
-    """Generate a binary test payload."""
-    uuid_name = uuid.uuid4()
-    return 'Hello, {name!s}'.format(name=uuid_name).encode()
+@pytest.fixture(
+    params=(32, 1024 + 1),
+    ids=('small-payload', 'large-payload'),
+)
+def transmit_payload(request: pytest.FixtureRequest) -> bytes:
+    """Generate binary test payloads of assorted sizes.
+
+    The choice 32 is arbitrary small value.
+
+    The choice 1024 + 1 is meant to be 1B larger than the chunk size used in
+    :file:`sftp.pyx` to make sure we excercise at least two rounds of reading/writing.
+    """
+    payload_len = request.param
+    random_bytes = [ord(random.choice(string.printable)) for _ in range(payload_len)]
+    return bytes(random_bytes)
 
 
 @pytest.fixture
@@ -92,35 +102,3 @@ def test_put_existing(pre_existing_dst_path, src_path, sftp_session, transmit_pa
     """Check that SFTP file upload works when target file exists."""
     sftp_session.put(str(src_path), str(pre_existing_dst_path))
     assert pre_existing_dst_path.read_bytes() == transmit_payload
-
-
-@pytest.fixture
-def large_payload():
-    """Generate a large 1025 byte (1024 + 1B) test payload."""
-    payload_len = 1024 + 1
-    random_bytes = [ord(random.choice(string.printable)) for _ in range(payload_len)]
-    return bytes(random_bytes)
-
-
-@pytest.fixture
-def src_path_large(tmp_path, large_payload):
-    """Return a remote path to a 1025 byte-sized file.
-
-    The pylibssh chunk size is 1024 so the test needs a file that would
-    execute at least two loops.
-    """
-    path = tmp_path / 'large.txt'
-    path.write_bytes(large_payload)
-    return path
-
-
-def test_put_large(dst_path, src_path_large, sftp_session, large_payload):
-    """Check that SFTP can upload large file."""
-    sftp_session.put(str(src_path_large), str(dst_path))
-    assert dst_path.read_bytes() == large_payload
-
-
-def test_get_large(dst_path, src_path_large, sftp_session, large_payload):
-    """Check that SFTP can download large file."""
-    sftp_session.get(str(src_path_large), str(dst_path))
-    assert dst_path.read_bytes() == large_payload
