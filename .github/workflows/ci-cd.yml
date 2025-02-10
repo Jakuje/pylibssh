@@ -597,7 +597,7 @@ jobs:
     - name: Verify that expected patch got created
       run: ls -1 '${{ needs.pre-setup.outputs.changelog-patch-name }}'
     - name: Save the package bump patch as a GHA artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: changelog
         path: |
@@ -876,7 +876,7 @@ jobs:
         ref: ${{ github.event.inputs.release-committish }}
 
     - name: Fetch the GHA artifact with the version patch
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: changelog
     - name: Apply the changelog patch but do not commit it
@@ -1017,7 +1017,7 @@ jobs:
         'dist/${{ needs.pre-setup.outputs.sdist-artifact-name }}'
     - name: Store the source distribution package
       if: fromJSON(matrix.store-sdist-to-artifact)
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ needs.pre-setup.outputs.dists-artifact-name }}
         # NOTE: Exact expected file names are specified here
@@ -1137,10 +1137,11 @@ jobs:
         packaging/rpm/ansible-pylibssh.spec
 
     - name: Download all the dists  # because `rpmlint` executes the spec file
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
-        name: ${{ needs.pre-setup.outputs.dists-artifact-name }}
+        pattern: ${{ needs.pre-setup.outputs.dists-artifact-name }}*
         path: dist/
+        merge-multiple: true
 
     - name: Lint the RPM spec file
       if: >-
@@ -1303,7 +1304,7 @@ jobs:
         );
         echo "artifact-id=${normalized_container_id}" >> "${GITHUB_OUTPUT}"
     - name: Store RPM and SRPM as artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ steps.artifact-name.outputs.artifact-id }}--srpm-n-rpm
         path: |
@@ -1456,10 +1457,11 @@ jobs:
     - name: Pre-populate tox env
       run: python -m tox -p auto --parallel-live -vvvv --notest
     - name: Download all the dists
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
-        name: ${{ needs.pre-setup.outputs.dists-artifact-name }}
+        pattern: ${{ needs.pre-setup.outputs.dists-artifact-name }}*
         path: dist/
+        merge-multiple: true
     - name: Verify metadata
       run: python -m tox -p auto --parallel-live -vvvv
 
@@ -1516,11 +1518,12 @@ jobs:
 
     steps:
     - name: Download all the dists
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
-        name: >-
-          ${{ needs.pre-setup.outputs.dists-artifact-name }}
+        pattern: >-
+          ${{ needs.pre-setup.outputs.dists-artifact-name }}*
         path: dist/
+        merge-multiple: true
     - name: >-
         📦
         Publish ${{ needs.pre-setup.outputs.git-tag }} to PyPI
@@ -1560,11 +1563,12 @@ jobs:
 
     steps:
     - name: Download all the dists
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
-        name: >-
-          ${{ needs.pre-setup.outputs.dists-artifact-name }}
+        pattern: >-
+          ${{ needs.pre-setup.outputs.dists-artifact-name }}*
         path: dist/
+        merge-multiple: true
     - name: >-
         📦
         Publish ${{ needs.pre-setup.outputs.git-tag }} to TestPyPI
@@ -1647,7 +1651,7 @@ jobs:
       uses: fregante/setup-git-user@v2
     - name: Fetch the GHA artifact with the version patch
       if: steps.existing-remote-tag-check.outputs.already-exists != 'true'
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: changelog
 
@@ -1749,12 +1753,13 @@ jobs:
 
     steps:
     - name: Download all the dists
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
-        name: ${{ needs.pre-setup.outputs.dists-artifact-name }}
+        pattern: ${{ needs.pre-setup.outputs.dists-artifact-name }}*
         path: dist/
+        merge-multiple: true
     - name: Fetch the GHA artifact with the version patch
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: changelog
 
@@ -1893,10 +1898,11 @@ jobs:
         --pre
         ansible-pylibssh
     - name: Download all the dists
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
-        name: ${{ needs.pre-setup.outputs.dists-artifact-name }}
+        pattern: ${{ needs.pre-setup.outputs.dists-artifact-name }}*
         path: dist/
+        merge-multiple: true
 
     - name: Switch to Python 3.11
       uses: actions/setup-python@v5.3.0

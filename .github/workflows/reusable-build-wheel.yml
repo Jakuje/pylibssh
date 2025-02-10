@@ -92,6 +92,25 @@ jobs:
         }}-${{ inputs.manylinux-image-target-arch }},metadata-validation
 
     steps:
+    - name: Compute GHA artifact name ending
+      id: gha-artifact-name
+      run: |
+        from hashlib import sha512
+        from os import environ
+        from pathlib import Path
+
+        FILE_APPEND_MODE = 'a'
+
+        inputs_json_str = """${{ toJSON(inputs) }}"""
+
+        hash = sha512(inputs_json_str.encode()).hexdigest()
+
+        with Path(environ['GITHUB_OUTPUT']).open(
+                mode=FILE_APPEND_MODE,
+        ) as outputs_file:
+            print(f'hash={hash}', file=outputs_file)
+      shell: python
+
     - name: Switch to using Python 3.11 by default
       uses: actions/setup-python@v5.3.0
       with:
@@ -184,9 +203,14 @@ jobs:
         ls -1
         dist/${{ inputs.wheel-artifact-name }}
     - name: Store ${{ inputs.manylinux-python-target }} binary wheel
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: ${{ inputs.dists-artifact-name }}
+        name: ${{ inputs.dists-artifact-name }}-
+          ${{ inputs.manylinux-year-target }}-
+          ${{ inputs.manylinux-image-target-arch }}-
+          ${{ inputs.manylinux-image-target-qemu-arch }}-
+          ${{ inputs.manylinux-python-target }}-
+          ${{ steps.gha-artifact-name.outputs.hash }}
         # NOTE: Exact expected file names are specified here
         # NOTE: as a safety measure — if anything weird ends
         # NOTE: up being in this dir or not all dists will be
