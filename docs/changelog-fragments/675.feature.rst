@@ -1,1 +1,2 @@
-Expose the SSH_OPTIONS_KEY_EXCHANGE option -- by :user:`NilashishC`
+The underlying ``SSH_OPTIONS_KEY_EXCHANGE`` option of ``libssh`` is
+now available as ``key_exchange_algorithms`` -- by :user:`NilashishC`.
