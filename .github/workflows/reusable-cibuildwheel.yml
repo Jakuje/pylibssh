@@ -9,6 +9,10 @@ on:  # yamllint disable-line rule:truthy
         description: Workflow artifact name containing dists
         required: true
         type: string
+      check-name:
+        description: A custom name for the Checks API-reported status
+        required: false
+        type: string
       cython-tracing:
         description: Whether to build Cython modules with line tracing
         default: '0'
@@ -42,7 +46,12 @@ env:
 jobs:
 
   build-wheel:
-    name: Build wheels on ${{ inputs.os }} ${{ inputs.qemu }}
+    name: >-
+      ${{
+        inputs.check-name
+        && inputs.check-name
+        || format('Build wheels on {0} {1}', inputs.os, inputs.qemu)
+      }}
     runs-on: ${{ inputs.os }}
     timeout-minutes: ${{ inputs.qemu && 60 || 7 }}
     steps:
