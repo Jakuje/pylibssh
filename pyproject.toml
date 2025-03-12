@@ -142,6 +142,7 @@ profile = "True"
 
 [tool.cibuildwheel]
 build-frontend = "build"
+# container-engine = "podman"  # FIXME?
 test-requires = "pytest pytest-cov pytest-xdist pytest-forked"
 test-command = "python -Im pytest -m smoke --no-cov {project}/tests"
 skip = "pp*"
