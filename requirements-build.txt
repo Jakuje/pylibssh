@@ -8,7 +8,7 @@ cython==3.0.12
     # via -r -
 expandvars==0.9.0
     # via -r -
-packaging==21.3
+packaging==24.0
     # via setuptools-scm
 pyparsing==3.0.9
     # via packaging
