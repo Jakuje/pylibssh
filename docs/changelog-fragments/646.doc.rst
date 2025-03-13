@@ -1,0 +1,2 @@
+Fixed the argument order in the ``scp.put()`` usage example
+-- by :user:`kucharskim`.
