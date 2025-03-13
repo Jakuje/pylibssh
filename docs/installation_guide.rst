@@ -128,10 +128,7 @@ compatible wheels, use:
 
 .. code-block:: shell-session
 
-    [dir:pylibssh] $ tox -e build-dists-manylinux1-x86_64  # with Docker
-
-    [dir:pylibssh] $ # or with Podman
-    [dir:pylibssh] $ DOCKER_EXECUTABLE=podman tox -e build-dists-manylinux1-x86_64
+    [dir:pylibssh] $ tox r -e cibuildwheel
 
 .. seealso::
 
