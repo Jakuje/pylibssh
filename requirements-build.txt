@@ -14,7 +14,7 @@ pyparsing==3.0.9
     # via packaging
 setuptools-scm==8.1.0
     # via -r -
-tomli==1.2.3
+tomli==2.0.1
     # via setuptools-scm
 typing-extensions==4.10.0
     # via setuptools-scm
