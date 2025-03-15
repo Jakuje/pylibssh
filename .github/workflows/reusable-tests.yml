@@ -244,6 +244,7 @@ jobs:
         --parallel-live
         --skip-missing-interpreters false
         -vvvvv
+        --skip-pkg-install
         --
         --no-cov -vvvvv --lf
         && exit 1
