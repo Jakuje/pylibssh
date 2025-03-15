@@ -59,7 +59,7 @@ env:
     PY_COLORS
     PYTEST_THEME
     PYTEST_THEME_MODE
-  TOX_VERSION: tox < 4.12
+  TOX_VERSION: tox
 
 
 jobs:
