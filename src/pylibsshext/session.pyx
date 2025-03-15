@@ -33,6 +33,7 @@ OPTS_MAP = {
     "timeout": libssh.SSH_OPTIONS_TIMEOUT,
     "knownhosts": libssh.SSH_OPTIONS_KNOWNHOSTS,
     "proxycommand": libssh.SSH_OPTIONS_PROXYCOMMAND,
+    "key_exchange_algorithms": libssh.SSH_OPTIONS_KEY_EXCHANGE,
     "publickey_accepted_algorithms": libssh.SSH_OPTIONS_PUBLICKEY_ACCEPTED_TYPES,
     "hostkeys": libssh.SSH_OPTIONS_HOSTKEYS,
     "gssapi_server_identity": libssh.SSH_OPTIONS_GSSAPI_SERVER_IDENTITY,
