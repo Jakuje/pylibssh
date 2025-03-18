@@ -50,6 +50,7 @@ env:
   PIP_DISABLE_PIP_VERSION_CHECK: 1
   PIP_NO_PYTHON_VERSION_WARNING: 1
   PIP_NO_WARN_SCRIPT_LOCATION: 1
+  PROJECT_NAME: ansible-pylibssh
   PY_COLORS: 1  # Recognized by the `py` package, dependency of `pytest`
   TOX_PARALLEL_NO_SPINNER: 1
   TOX_TESTENV_PASSENV: >-  # Make tox-wrapped tools see color requests
@@ -80,7 +81,7 @@ jobs:
 
     env:
       ANSIBLE_PYLIBSSH_CYTHON_TRACING: ${{ inputs.cython-tracing }}
-      TOXENV: test-${{ inputs.dist-type }}-dists
+      TOXENV: py
 
     steps:
     - name: Install build toolchain and openssl headers on Linux
@@ -196,17 +197,62 @@ jobs:
         path: dist/
         merge-multiple: true
 
+    - name: Determine pre-compiled compatible wheel
+      env:
+        # NOTE: When `pip` is forced to colorize output piped into `jq`,
+        # NOTE: the latter can't parse it. So we're overriding the color
+        # NOTE: preference here via https://no-color.org.
+        # NOTE: Setting `FORCE_COLOR` to any value (including 0, an empty
+        # NOTE: string, or a "YAML null" `~`) doesn't have any effect and
+        # NOTE: `pip` (through its verndored copy of `rich`) treats the
+        # NOTE: presence of the variable as "force-color" regardless.
+        #
+        # NOTE: This doesn't actually work either, so we'll resort to unsetting
+        # NOTE: in the Bash script.
+        # NOTE: Ref: https://github.com/Textualize/rich/issues/2622
+        NO_COLOR: 1
+      if: inputs.dist-type == 'binary'
+      id: wheel-file
+      run: >
+        echo -n path= | tee -a "${GITHUB_OUTPUT}"
+
+
+        unset FORCE_COLOR
+
+
+        python
+        -X utf8
+        -u -I
+        -m pip install
+        --find-links=./dist
+        --no-index
+        '${{ env.PROJECT_NAME }}'
+        --force-reinstall
+        --no-color
+        --no-deps
+        --only-binary=:all:
+        --dry-run
+        --report=-
+        --quiet
+        | jq --raw-output .install[].download_info.url
+        | sed -e 's#^file://##' -e 's#%2B#+#'
+        | tee -a "${GITHUB_OUTPUT}"
+      shell: bash
+
     - name: >-
         Pre-populate tox env:
         ${{ env.TOXENV }}
-      # FIXME: Integrate the following once it's possible
-      # --installpkg 'dist/${{ needs.pre-setup.outputs.wheel-artifact-name }}'
       run: >-
         python -m
         tox
         --parallel auto
         --parallel-live
         --skip-missing-interpreters false
+        --installpkg '${{
+          inputs.dist-type == 'binary'
+          && steps.wheel-file.outputs.path
+          || format('dist/{0}', inputs.source-tarball-name)
+        }}'
         --notest
 
     - name: Configure tox to run pytest under catchsegv
@@ -219,8 +265,6 @@ jobs:
       shell: python
 
     - name: Run the testing
-      # FIXME: Integrate the following once it's possible
-      # --installpkg 'dist/${{ needs.pre-setup.outputs.wheel-artifact-name }}'
       run: >-
         python -m
         tox
@@ -235,8 +279,6 @@ jobs:
         paths: .test-results/pytest/results.xml
     - name: Re-run the failing tests with maximum verbosity
       if: failure()
-      # FIXME: Integrate the following once it's possible
-      # --installpkg 'dist/${{ needs.pre-setup.outputs.wheel-artifact-name }}'
       run: >-  # `exit 1` makes sure that the job remains red with flaky runs
         python -m
         tox
