@@ -33,7 +33,6 @@ def ssh_channel(ssh_client_session):
         chan.close()
 
 
-@pytest.mark.forked
 def exec_second_command(ssh_channel):
     """Check the standard output of ``exec_command()`` as a string."""
     u_cmd = ssh_channel.exec_command('echo -n Hello Again')
