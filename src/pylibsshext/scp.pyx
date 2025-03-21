@@ -24,7 +24,7 @@ from pylibsshext.errors cimport LibsshSCPException
 from pylibsshext.session cimport get_libssh_session
 
 
-SCP_MAX_CHUNK = 65536
+SCP_MAX_CHUNK = 65_536  # 64kB
 
 
 cdef class SCP:
