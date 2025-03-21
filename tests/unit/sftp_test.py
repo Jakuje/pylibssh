@@ -8,6 +8,8 @@ import uuid
 
 import pytest
 
+from pylibsshext.sftp import SFTP_MAX_CHUNK
+
 
 @pytest.fixture
 def sftp_session(ssh_client_session):
@@ -21,7 +23,7 @@ def sftp_session(ssh_client_session):
 
 
 @pytest.fixture(
-    params=(32, 1024 + 1),
+    params=(32, SFTP_MAX_CHUNK + 1),
     ids=('small-payload', 'large-payload'),
 )
 def transmit_payload(request: pytest.FixtureRequest) -> bytes:
@@ -29,8 +31,9 @@ def transmit_payload(request: pytest.FixtureRequest) -> bytes:
 
     The choice 32 is arbitrary small value.
 
-    The choice 1024 + 1 is meant to be 1B larger than the chunk size used in
-    :file:`sftp.pyx` to make sure we excercise at least two rounds of reading/writing.
+    The choice SFTP_MAX_CHUNK + 1 (32kB + 1B) is meant to be 1B larger than the chunk
+    size used in :file:`sftp.pyx` to make sure we excercise at least two rounds of
+    reading/writing.
     """
     payload_len = request.param
     random_bytes = [ord(random.choice(string.printable)) for _ in range(payload_len)]
