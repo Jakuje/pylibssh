@@ -109,7 +109,7 @@ def test_send_signal(ssh_channel):
         ssh_channel.poll(timeout=POLL_TIMEOUT)
         output += ssh_channel.recv().decode('utf-8')
 
-    # Send SIGINT
+    # Send SIGUSR1
     ssh_channel.send_signal(signal.SIGUSR1)
 
     rc = -1
