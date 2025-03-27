@@ -56,7 +56,6 @@ Source14: %{pypi_source typing_extensions 4.12.2}
 %endif
 Source15: %{pypi_source pytest 6.2.4}
 Source16: %{pypi_source pytest-cov 2.12.1}
-Source17: %{pypi_source pytest-forked 1.3.0}
 Source18: %{pypi_source pytest-xdist 2.3.0}
 Source19: %{pypi_source iniconfig 1.1.1}
 Source20: %{pypi_source attrs 20.3.0}
@@ -77,7 +76,6 @@ BuildRequires: openssh-clients
 %if 0%{?rhel}
 BuildRequires: python3dist(pytest)
 BuildRequires: python3dist(pytest-cov)
-BuildRequires: python3dist(pytest-forked)
 BuildRequires: python3dist(pytest-xdist)
 BuildRequires: python3dist(tox)
 %endif
@@ -165,8 +163,6 @@ PYTHONPATH="$(pwd)/bin" \
 %{__python3} -m pip install --no-deps -t bin %{SOURCE15}
 PYTHONPATH="$(pwd)/bin" \
 %{__python3} -m pip install --no-deps -t bin %{SOURCE16}
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE17}
 PYTHONPATH="$(pwd)/bin" \
 %{__python3} -m pip install --no-deps -t bin %{SOURCE18}
 PYTHONPATH="$(pwd)/bin" \

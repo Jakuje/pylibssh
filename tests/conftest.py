@@ -3,6 +3,7 @@
 
 """Pytest plugins and fixtures configuration."""
 
+import logging
 import shutil
 import socket
 import subprocess
@@ -115,6 +116,8 @@ def ssh_client_session(ssh_session_connect):
     # noqa: DAR101
     """
     ssh_session = Session()
+    # TODO Adjust when #597 will be merged
+    ssh_session.set_log_level(logging.CRITICAL)
     ssh_session_connect(ssh_session)
     try:  # noqa: WPS501
         yield ssh_session
@@ -173,6 +176,7 @@ def sshd_addr(free_port_num, ssh_authorized_keys_path, sshd_hostkey_path, sshd_p
         '/usr/sbin/sshd',
         '-D',
         '-f', '/dev/null',
+        '-E', '/dev/stderr',
         opt, 'LogLevel=DEBUG3',
         opt, 'HostKey={key!s}'.format(key=sshd_hostkey_path),
         opt, 'PidFile={pid!s}'.format(pid=sshd_path / 'sshd.pid'),
@@ -187,7 +191,6 @@ def sshd_addr(free_port_num, ssh_authorized_keys_path, sshd_hostkey_path, sshd_p
         opt, 'StrictModes=no',
         opt, 'PermitEmptyPasswords=yes',
         opt, 'PermitRootLogin=yes',
-        opt, 'Protocol=2',
         opt, 'HostbasedAuthentication=no',
         opt, 'IgnoreUserKnownHosts=yes',
         opt, 'Port={port:d}'.format(port=free_port_num),  # port before addr

@@ -1103,15 +1103,6 @@ jobs:
         }}${{ steps.distribution-meta.outputs.dist-tag }}.noarch.rpm
         https://rpmfind.net/linux/epel/"$(
           rpm --eval '%{rhel}'
-        )"/Everything/x86_64/Packages/p/python3-pytest-forked-${{
-          contains(matrix.target-container.tag, 'ubi9')
-          && '1.4.0'
-          || '1.0.2'
-        }}-1${{
-          steps.distribution-meta.outputs.dist-tag
-        }}.noarch.rpm
-        https://rpmfind.net/linux/epel/"$(
-          rpm --eval '%{rhel}'
         )"/Everything/x86_64/Packages/p/python3-pytest-xdist-${{
           contains(matrix.target-container.tag, 'ubi9')
           && '2.5.0-2'
