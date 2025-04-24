@@ -431,7 +431,7 @@ Deprecations (removal in next major release)
 --------------------------------------------
 
 - The project stopped being tested under Ubuntu 18.04 VM since
-  GitHub is sunetting their CI images -- by :user:`webknjaz`
+  GitHub is sunsetting their CI images -- by :user:`webknjaz`
   (:issue:`381`)
 
 
