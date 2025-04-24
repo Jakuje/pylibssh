@@ -71,6 +71,8 @@ jobs:
       ${{ inputs.dist-type }} dist
     runs-on: ${{ inputs.runner-vm-os }}
 
+    timeout-minutes: 7
+
     continue-on-error: >-
       ${{
           (
