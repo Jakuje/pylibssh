@@ -24,6 +24,18 @@ repos:
   hooks:
   - id: remove-tabs
 
+- repo: https://github.com/python-jsonschema/check-jsonschema.git
+  rev: 0.33.0
+  hooks:
+  - id: check-jsonschema
+    name: Check GitHub Workflows set timeout-minutes
+    args:
+    - --builtin-schema
+    - github-workflows-require-timeout
+    files: ^\.github/workflows/[^/]+$
+    types:
+    - yaml
+
 - repo: https://github.com/pre-commit/pygrep-hooks.git
   rev: v1.10.0
   hooks:

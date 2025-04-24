@@ -433,6 +433,8 @@ jobs:
     - pre-setup
     runs-on: ubuntu-latest
 
+    timeout-minutes: 2  # network is slow sometimes
+
     env:
       TOXENV: make-changelog
 
@@ -756,6 +758,9 @@ jobs:
     - build-changelog
     - pre-setup  # transitive, for accessing settings
     runs-on: ${{ matrix.runner-vm-os }}
+
+    timeout-minutes: 2
+
     strategy:
       matrix:
         python-version:
@@ -975,6 +980,9 @@ jobs:
           registry: registry.access.redhat.com
 
     runs-on: ubuntu-latest
+
+    timeout-minutes: 5
+
     container:
       # NOTE: GHA has poor support for concat which is why I resorted to
       # NOTE: using this ugly ternary syntax
@@ -1302,6 +1310,8 @@ jobs:
     - pre-setup  # transitive, for accessing settings
     runs-on: ubuntu-latest
 
+    timeout-minutes: 1
+
     env:
       TOXENV: metadata-validation
 
@@ -1385,6 +1395,8 @@ jobs:
     - test-macos
 
     runs-on: Ubuntu-latest
+
+    timeout-minutes: 1
 
     steps:
     - name: Decide whether the needed jobs succeeded or failed
@@ -1497,6 +1509,8 @@ jobs:
       always()
       && needs.publish-pypi.result == 'success'
     runs-on: ubuntu-latest
+
+    timeout-minutes: 1
 
     outputs:
       pull_request_url: ${{ steps.pr.outputs.pull_request_url }}
@@ -1782,6 +1796,8 @@ jobs:
         fromJSON(needs.pre-setup.outputs.release-requested)
       )
     runs-on: ubuntu-latest
+
+    timeout-minutes: 5
 
     environment:
       name: github-pages
