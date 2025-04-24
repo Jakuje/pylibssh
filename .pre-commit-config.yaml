@@ -39,6 +39,7 @@ repos:
     files: ^\.github/workflows/[^/]+$
     types:
     - yaml
+  - id: check-readthedocs
 
 - repo: https://github.com/pre-commit/pygrep-hooks.git
   rev: v1.10.0
