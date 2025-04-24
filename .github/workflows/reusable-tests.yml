@@ -98,12 +98,7 @@ jobs:
     - name: Install catchsegv and libssh headers on Linux for cythonize+coverage
       if: >-
         runner.os == 'Linux'
-      run: >-
-        sudo apt update && sudo apt install ${{
-          inputs.runner-vm-os != 'ubuntu-20.04'
-          && 'glibc-tools'
-          || ''
-        }} libssh-dev
+      run: sudo apt update && sudo apt install glibc-tools libssh-dev
     - name: Switch 🐍 to v${{ inputs.python-version }}
       id: python-install
       uses: actions/setup-python@v5.3.0
