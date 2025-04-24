@@ -539,8 +539,6 @@ cdef class Session(object):
         if self._libssh_session is not NULL:
             if libssh.ssh_is_connected(self._libssh_session):
                 libssh.ssh_disconnect(self._libssh_session)
-            libssh.ssh_free(self._libssh_session)
-            self._libssh_session = NULL
 
     def set_missing_host_key_policy(self, policy):
         """The policy to use if the know host key is missing.
