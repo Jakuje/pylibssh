@@ -230,17 +230,12 @@ export PYTHONPATH="%{buildroot_site_packages}:${PYTHONPATH}"
 # Fedora:
 %if "%{?fedora:SET}" == "SET"
 %pyproject_check_import
-%tox -e just-pytest -- \
-  -- \
-  --deselect tests/unit/scp_test.py::test_get \
-  --deselect tests/unit/scp_test.py::test_put
+%tox -e just-pytest
 # CentOS or RHEL:
 %else
 export PYTHONPATH="$(pwd)/bin:${PYTHONPATH}"
 %{__python3} -m pytest \
-  --no-cov \
-  --deselect tests/unit/scp_test.py::test_get \
-  --deselect tests/unit/scp_test.py::test_put
+  --no-cov
 %endif
 
 

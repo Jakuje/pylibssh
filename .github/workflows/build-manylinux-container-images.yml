@@ -86,11 +86,17 @@ jobs:
         Set up QEMU ${{ env.QEMU_ARCH }} arch emulation
         with Podman
       if: env.QEMU_ARCH != 'amd64'
-      run: >-
+      run: >
         sudo podman run
         --rm --privileged
-        multiarch/qemu-user-static
-        --reset -p yes
+        tonistiigi/binfmt
+        --uninstall 'qemu-*'
+
+
+        sudo podman run
+        --rm --privileged
+        tonistiigi/binfmt
+        --install all
     - name: Build the image with Buildah
       id: build-image
       uses: redhat-actions/buildah-build@v2.13

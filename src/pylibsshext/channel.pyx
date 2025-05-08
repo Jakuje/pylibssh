@@ -211,7 +211,7 @@ cdef class Channel:
         if not isinstance(sig, signal.Signals):
             raise TypeError(f"Expecting signal.Signals not {type(sig)}")
 
-        sshsig = sig.name.replace("SIG", "")  # FIXME: replace w/ `str.removeprefix()` once Python 3.8 support is dropped
+        sshsig = sig.name.removeprefix("SIG")
         rc = libssh.ssh_channel_request_send_signal(self._libssh_channel, sshsig.encode("utf-8"))
         if rc != libssh.SSH_OK:
             raise LibsshChannelException("Failed to ssh_channel_request_send_signal: [%d]" % rc)

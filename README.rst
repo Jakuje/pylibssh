@@ -53,7 +53,7 @@ The web view is @ https://ansible.github.io/pylibssh/.
 Requirements
 ------------
 
-You need Python 3.8+
+You need Python 3.9+
 
 pylibssh requires libssh to be installed in particular:
 

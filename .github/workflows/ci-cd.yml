@@ -767,7 +767,6 @@ jobs:
         - >-
           3.10
         - 3.9
-        - 3.8
         runner-vm-os:
         - ubuntu-22.04
         store-sdist-to-artifact:
@@ -965,6 +964,8 @@ jobs:
         target-container:
         - tag: fedora:39
         - tag: fedora:40
+        - tag: fedora:41
+        - tag: fedora:42
         # No matching package to install: 'python3dist(wheel)'
         # - tag: centos/centos:stream9
         #   registry: quay.io
@@ -1012,17 +1013,6 @@ jobs:
       run: |
         dist_tag=$(rpm --eval '%{?dist}')
         echo "dist-tag=${dist_tag}" >> "${GITHUB_OUTPUT}"
-
-    - name: Patch CentOS Stream 8 repository URLs
-      if: >-
-        matrix.target-container.tag == 'centos/centos:stream8'
-      run: >-
-        sed -i
-        -e 's/mirrorlist/#mirrorlist/g'
-        -e
-        's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g'
-        /etc/yum.repos.d/CentOS-*
-      shell: bash -eEuo pipefail {0}
 
     - name: Enable EPEL repository
       if: contains(matrix.target-container.tag, 'centos')
@@ -1240,7 +1230,6 @@ jobs:
         - "3.11"
         - "3.10"
         - 3.9
-        - 3.8
         runner-vm-os:
         - ubuntu-24.04
         - ubuntu-22.04
@@ -1277,7 +1266,6 @@ jobs:
         - "3.11"
         - "3.10"
         - 3.9
-        - 3.8
         runner-vm-os:
         - macos-13
         dist-type:
