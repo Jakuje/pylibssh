@@ -26,6 +26,7 @@ jobs:
 
     strategy:
       matrix:
+        # All cached images we prebuild now target PEP 600 tags only
         IMAGE:
         # Build containers for x86_64
         - ARCH: x86_64
@@ -45,18 +46,8 @@ jobs:
         # Build containers for ppc64
         # - ARCH: ppc64
         YEAR:
-        - 2014
-        - _2_24  # PEP 600
+        - _2_24
         - _2_28
-        include:
-        - IMAGE:
-            ARCH: x86_64
-            QEMU_ARCH: amd64
-          YEAR: 1
-        - IMAGE:
-            ARCH: x86_64
-            QEMU_ARCH: amd64
-          YEAR: 2010
 
     env:
       LIBSSH_VERSION: 0.9.6
