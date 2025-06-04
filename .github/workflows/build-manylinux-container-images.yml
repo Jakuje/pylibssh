@@ -20,7 +20,7 @@ on:  # yamllint disable-line rule:truthy
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.IMAGE.HOST_OS || 'ubuntu-latest' }}
 
     timeout-minutes: 45
 
@@ -33,7 +33,7 @@ jobs:
           QEMU_ARCH: amd64
         # Build containers for aarch64 (ARM 64)
         - ARCH: aarch64
-          QEMU_ARCH: arm64
+          HOST_OS: ubuntu-24.04-arm
         # Build containers for ppc64le
         - ARCH: ppc64le
         # Build containers for s390x
