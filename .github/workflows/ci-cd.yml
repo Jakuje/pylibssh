@@ -1236,6 +1236,18 @@ jobs:
         dist-type:
         - binary
         - source
+        exclude:
+        # NOTE: Python 3.12+ with installs from sdist hits a bug in tox
+        # NOTE: which makes it fail until GHA times out. This is why the
+        # NOTE: following exclusions are in place. They should be
+        # NOTE: removed once tox fixes said bug.
+        # Ref: https://github.com/tox-dev/tox/issues/3512
+        - python-version: 3.14
+          dist-type: source
+        - python-version: 3.13
+          dist-type: source
+        - python-version: 3.12
+          dist-type: source
 
     uses: ./.github/workflows/reusable-tests.yml
     with:
@@ -1271,6 +1283,18 @@ jobs:
         dist-type:
         - binary
         - source
+        exclude:
+        # NOTE: Python 3.12+ with installs from sdist hits a bug in tox
+        # NOTE: which makes it fail until GHA times out. This is why the
+        # NOTE: following exclusions are in place. They should be
+        # NOTE: removed once tox fixes said bug.
+        # Ref: https://github.com/tox-dev/tox/issues/3512
+        - python-version: 3.14
+          dist-type: source
+        - python-version: 3.13
+          dist-type: source
+        - python-version: 3.12
+          dist-type: source
 
     uses: ./.github/workflows/reusable-tests.yml
     with:
