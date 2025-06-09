@@ -11,13 +11,7 @@ PYTHON_INTERPRETER=/opt/python/cp39-cp39/bin/python
 VIRTUALENV_PYTHON_BIN="${USERSPACE_VENV_BIN_PATH}/python"
 VIRTUALENV_PIP_BIN="${VIRTUALENV_PYTHON_BIN} -m pip"
 
-# NOTE: Cmake removed compatibility with `cmake < 3.5` that
-# NOTE: libssh 0.9.6 is set up to require.
-# NOTE: So this patch limits the version of `cmake` we install.
-#
-# Ref: https://github.com/eclipse-ecal/ecal/issues/2041
-# FIXME: Drop the restriction once libssh is bumped to v0.11 series.
-TOOLS_PKGS="auditwheel cmake<4 --only-binary=cmake"
+TOOLS_PKGS="auditwheel cmake --only-binary=cmake"
 
 # Avoid creation of __pycache__/*.py[c|o]
 export PYTHONDONTWRITEBYTECODE=1
