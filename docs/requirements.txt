@@ -332,9 +332,9 @@ sphinx-rtd-theme==0.5.1 \
     --hash=sha256:eda689eda0c7301a80cf122dad28b1861e5605cbf455558f3775e1e8200e83a5 \
     --hash=sha256:fa6bebd5ab9a73da8e102509a86f3fcc36dec04a0b52ea80e5a033b2aba00113
     # via sphinx-ansible-theme
-sphinxcontrib-apidoc==0.5.0 \
-    --hash=sha256:65efcd92212a5f823715fb95ee098b458a6bb09a5ee617d9ed3dead97177cd55 \
-    --hash=sha256:c671d644d6dc468be91b813dcddf74d87893bff74fe8f1b8b01b69408f0fb776
+sphinxcontrib-apidoc==0.6.0 \
+    --hash=sha256:329b9810d66988f48e127a6bd18cc8efbbd1cd20b8deb4691a35738af49ad88d \
+    --hash=sha256:668592f933eee858f3bc0d0810d56d50dfa0a70f650a2faaaad501b9a3504633
     # via -r docs/requirements.in
 sphinxcontrib-applehelp==2.0.0 \
     --hash=sha256:2f29ef331735ce958efa4734873f084941970894c6090408b079c61b2e1c06d1 \
