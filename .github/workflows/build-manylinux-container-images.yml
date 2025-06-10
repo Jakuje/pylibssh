@@ -22,7 +22,7 @@ jobs:
   build:
     runs-on: ${{ matrix.IMAGE.HOST_OS || 'ubuntu-latest' }}
 
-    timeout-minutes: 45
+    timeout-minutes: 50
 
     strategy:
       matrix:
