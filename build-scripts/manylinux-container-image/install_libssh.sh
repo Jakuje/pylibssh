@@ -68,6 +68,8 @@ export LDFLAGS="-pthread -ldl"
 # See also "/tmp/libssh-0.9.4-manylinux-build.FJUercWAg9/libssh-0.9.4/build/CMakeFiles/CMakeError.log".
 export PYCA_OPENSSL_PATH=/opt/pyca/cryptography/openssl
 export PKG_CONFIG_PATH="${STATIC_DEPS_PREFIX}/lib64/pkgconfig:${STATIC_DEPS_PREFIX}/lib/pkgconfig:${PYCA_OPENSSL_PATH}/lib/pkgconfig"
+# Point libssh directly to the OpenSSL directory. It can find it there
+export OPENSSL_ROOT_DIR="${PYCA_OPENSSL_PATH}"
 
 >&2 echo
 >&2 echo
