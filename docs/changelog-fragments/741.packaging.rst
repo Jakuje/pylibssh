@@ -1,2 +1,2 @@
-Updated building of manylinux versions to use _2_31
+Updated building of manylinux versions to use _2_32
 in ``build-manylinux-container-images`` workflow -- by :user:`KB-perByte`.
