@@ -48,6 +48,7 @@ jobs:
         YEAR:
         - _2_24
         - _2_28
+        - _2_31
 
     env:
       LIBSSH_VERSION: 0.11.1
