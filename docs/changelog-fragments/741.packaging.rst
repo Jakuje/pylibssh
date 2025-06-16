@@ -1,2 +1,2 @@
-Updated building of manylinux versions to use _2_32
+Started caching ``manylinux`` build images to be used for producing ``2_32`` tagged wheels
 in ``build-manylinux-container-images`` workflow -- by :user:`KB-perByte`.
