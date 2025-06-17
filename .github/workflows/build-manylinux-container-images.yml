@@ -77,7 +77,8 @@ jobs:
     - name: >-
         Set up QEMU ${{ env.QEMU_ARCH }} arch emulation
         with Podman
-      if: env.QEMU_ARCH != 'amd64'
+      if: >-
+        !contains(fromJSON('["aarch64", "amd64"]'), env.QEMU_ARCH)
       run: >
         sudo podman run
         --rm --privileged
