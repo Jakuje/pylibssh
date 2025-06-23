@@ -1,0 +1,2 @@
+The ``dumb-pypi``-produced static package index now renders correct
+URLs to the distribution packages -- by :user:`webknjaz`.
