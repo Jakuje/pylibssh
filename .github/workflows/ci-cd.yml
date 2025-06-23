@@ -632,6 +632,7 @@ jobs:
     uses: ./.github/workflows/reusable-cibuildwheel.yml
     with:
       runner-vm-os: ${{ matrix.runner-vm-os }}
+      timeout-minutes: 9
       wheel-tags-to-skip: >-
         ${{
         !fromJSON(needs.pre-setup.outputs.release-requested)
@@ -684,6 +685,7 @@ jobs:
     uses: ./.github/workflows/reusable-cibuildwheel.yml
     with:
       runner-vm-os: ubuntu-latest
+      timeout-minutes: 9
       wheel-tags-to-skip: >-
         *_i686
         *-musllinux_*
@@ -721,6 +723,7 @@ jobs:
     uses: ./.github/workflows/reusable-cibuildwheel.yml
     with:
       runner-vm-os: ubuntu-latest
+      timeout-minutes: 70
       wheel-tags-to-skip: >-
         *_i686
         *-musllinux_*
