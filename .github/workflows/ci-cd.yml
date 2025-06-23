@@ -1888,9 +1888,9 @@ jobs:
       run: |
         python -m dumb_pypi.main \
           --package-list <(ls dist/) \
-          --packages-url https://raw.githubusercontent.com/${{
-            github.repository
-          }}/gh-pages/dist \
+          --packages-url "https://${{
+            github.repository_owner
+          }}.github.io/${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}/dist" \
           --output-dir gh-pages-dumb-pypi
       shell: bash
 
