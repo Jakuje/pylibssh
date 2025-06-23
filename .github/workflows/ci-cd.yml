@@ -627,11 +627,11 @@ jobs:
     - pre-setup  # transitive, for accessing settings
     strategy:
       matrix:
-        os:
+        runner-vm-os:
         - macos-13
     uses: ./.github/workflows/reusable-cibuildwheel.yml
     with:
-      os: ${{ matrix.os }}
+      runner-vm-os: ${{ matrix.runner-vm-os }}
       wheel-tags-to-skip: >-
         ${{
         !fromJSON(needs.pre-setup.outputs.release-requested)
@@ -683,7 +683,7 @@ jobs:
     - pre-setup  # transitive, for accessing settings
     uses: ./.github/workflows/reusable-cibuildwheel.yml
     with:
-      os: ubuntu-latest
+      runner-vm-os: ubuntu-latest
       wheel-tags-to-skip: >-
         *_i686
         *-musllinux_*
@@ -720,7 +720,7 @@ jobs:
     - pre-setup  # transitive, for accessing settings
     uses: ./.github/workflows/reusable-cibuildwheel.yml
     with:
-      os: ubuntu-latest
+      runner-vm-os: ubuntu-latest
       wheel-tags-to-skip: >-
         *_i686
         *-musllinux_*

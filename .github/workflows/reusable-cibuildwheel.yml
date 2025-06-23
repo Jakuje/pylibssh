@@ -18,14 +18,14 @@ on:  # yamllint disable-line rule:truthy
         default: '0'
         required: false
         type: string
-      os:
-        description: VM OS to use, without version suffix
-        default: ubuntu
-        required: false
-        type: string
       qemu:
         description: Emulated QEMU architecture
         default: ''
+        required: false
+        type: string
+      runner-vm-os:
+        description: VM OS to use
+        default: ubuntu-latest
         required: false
         type: string
       source-tarball-name:
@@ -50,9 +50,9 @@ jobs:
       ${{
         inputs.check-name
         && inputs.check-name
-        || format('Build wheels on {0} {1}', inputs.os, inputs.qemu)
+        || format('Build wheels on {0} {1}', inputs.runner-vm-os, inputs.qemu)
       }}
-    runs-on: ${{ inputs.os }}
+    runs-on: ${{ inputs.runner-vm-os }}
     timeout-minutes: ${{ inputs.qemu && 70 || 9 }}
     steps:
     - name: Compute GHA artifact name ending
@@ -112,7 +112,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.dists-artifact-name }}-
-          ${{ inputs.os }}-
+          ${{ inputs.runner-vm-os }}-
           ${{ inputs.qemu }}-
           ${{ steps.gha-artifact-name.outputs.hash }}
         path: ./wheelhouse/*.whl
