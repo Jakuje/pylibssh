@@ -109,6 +109,7 @@ cdef class Session(object):
         self._hash_py = None
         self._fingerprint_py = None
         self._keytype_py = None
+        self._retries = 0
         # Due to delayed freeing of channels, some older libssh versions might expect
         # the callbacks to be around even after we free the underlying channels so
         # we should free them only when we terminate the session.
@@ -236,8 +237,16 @@ cdef class Session(object):
         file should be validated. It defaults to True
         :type host_key_checking: boolean
 
+        :param open_session_retries: The number of retries to attempt when libssh
+                                      channel function ``ssh_channel_open_session()`` returns ``SSH_AGAIN``. It defaults
+                                      to 0, no retries attempted.
+        :type open_session_retries: integer
+
         :param timeout: The timeout in seconds for the TCP connect
         :type timeout: long integer
+
+        :param timeout_usec: The timeout in microseconds for the TCP connect
+        :type timeout_usec: long integer
 
         :param port: The ssh server port to connect to
         :type port: integer
@@ -261,6 +270,9 @@ cdef class Session(object):
             except Exception:
                 libssh.ssh_disconnect(self._libssh_session)
                 raise
+
+        if 'open_session_retries' in kwargs:
+            self._retries = kwargs['open_session_retries']
 
         # We need to userauth_none before we can query the available auth types
         rc = libssh.ssh_userauth_none(self._libssh_session, NULL)
@@ -554,3 +566,6 @@ cdef class Session(object):
 
 cdef libssh.ssh_session get_libssh_session(Session session):
     return session._libssh_session
+
+cdef int get_session_retries(Session session):
+    return session._retries
