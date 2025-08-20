@@ -996,9 +996,6 @@ jobs:
         - tag: fedora:40
         - tag: fedora:41
         - tag: fedora:42
-        # No matching package to install: 'python3dist(wheel)'
-        # - tag: centos/centos:stream9
-        #   registry: quay.io
         - tag: ubi9/ubi:9.0.0
           registry: registry.access.redhat.com
         - tag: ubi9/ubi:9.1
@@ -1030,13 +1027,6 @@ jobs:
           matrix.target-container.tag
         }}
 
-    continue-on-error: >-  # Stub for in-matrix "allowed-failures"
-      ${{
-        contains(matrix.target-container.tag, '--DISABLED--')
-        && true
-        || false
-      }}
-
     steps:
     - name: Produce artifact name
       id: distribution-meta
@@ -1044,29 +1034,17 @@ jobs:
         dist_tag=$(rpm --eval '%{?dist}')
         echo "dist-tag=${dist_tag}" >> "${GITHUB_OUTPUT}"
 
-    - name: Enable EPEL repository
-      if: contains(matrix.target-container.tag, 'centos')
-      run: dnf install --assumeyes epel-release
-
     - name: Install build tooling
       run: >-
         dnf install
         --assumeyes
         dnf-plugins-core
         rpm-build
-        ${{
-            !contains(matrix.target-container.tag, 'ubi')
-            && 'rpmdevtools rpmlint'
-            || ''
-        }}
+        rpmdevtools
+        rpmlint
 
-    - name: Create rpmbuild directory structure on a community distro
-      if: >-
-        !contains(matrix.target-container.tag, 'ubi')
+    - name: Create rpmbuild directory structure
       run: rpmdev-setuptree
-    - name: Create rpmbuild directory structure on RHEL
-      if: contains(matrix.target-container.tag, 'ubi')
-      run: mkdir -pv ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 
     - name: Retrieve the project source from an sdist inside the GHA artifact
       uses: re-actors/checkout-python-sdist@release/v2
@@ -1089,8 +1067,6 @@ jobs:
         merge-multiple: true
 
     - name: Lint the RPM spec file
-      if: >-
-        !contains(matrix.target-container.tag, 'ubi')
       run: rpmlint packaging/rpm/ansible-pylibssh.spec
 
     - name: Copy sdist to the sources dir
@@ -1099,22 +1075,15 @@ jobs:
         'dist/${{ needs.pre-setup.outputs.sdist-artifact-name }}'
         ~/rpmbuild/SOURCES/
 
-    - name: Install static test dependencies missing from UBI9
-      if: contains(matrix.target-container.tag, 'ubi9')
+    - name: Install transitive deps for build deps in external repos
+      if: contains(matrix.target-container.tag, 'ubi')
       run: >-
-        rpm
-        -ivh
-        --nodeps
-        https://rpmfind.net/linux/centos-stream/"$(
-          rpm --eval '%{rhel}'
-        )"-stream/AppStream/x86_64/os/Packages/python3-pytest-6.2.2-6${{
-          steps.distribution-meta.outputs.dist-tag
-        }}.noarch.rpm
-        https://rpmfind.net/linux/centos-stream/"$(
-          rpm --eval '%{rhel}'
-        )"-stream/CRB/x86_64/os/Packages/python3-wheel-0.36.2-7${{
-          steps.distribution-meta.outputs.dist-tag
-        }}.noarch.rpm
+        dnf install
+        --assumeyes
+        python3-packaging
+        python3-pluggy
+        python3-py
+        python3-tomli
 
     - name: Install static test dependencies missing from all UBIs
       if: contains(matrix.target-container.tag, 'ubi')
@@ -1124,60 +1093,55 @@ jobs:
         --nodeps
         https://rpmfind.net/linux/epel/"$(
           rpm --eval '%{rhel}'
-        )"/Everything/x86_64/Packages/p/python3-pytest-cov-${{
-          contains(matrix.target-container.tag, 'ubi9')
-          && '4.0.0-2'
-          || '2.6.0-1'
-        }}${{ steps.distribution-meta.outputs.dist-tag }}.noarch.rpm
+        )"/Everything/x86_64/Packages/p/python3-pytest-cov-4.0.0-2${{
+          steps.distribution-meta.outputs.dist-tag
+        }}.noarch.rpm
         https://rpmfind.net/linux/epel/"$(
           rpm --eval '%{rhel}'
-        )"/Everything/x86_64/Packages/p/python3-pytest-xdist-${{
-          contains(matrix.target-container.tag, 'ubi9')
-          && '2.5.0-2'
-          || '1.24.1-1'
-        }}${{ steps.distribution-meta.outputs.dist-tag }}.noarch.rpm
+        )"/Everything/x86_64/Packages/p/python3-pytest-xdist-2.5.0-2${{
+          steps.distribution-meta.outputs.dist-tag
+        }}.noarch.rpm
         https://rpmfind.net/linux/epel/"$(
           rpm --eval '%{rhel}'
-        )"/Everything/x86_64/Packages/t/tox-${{
-          contains(matrix.target-container.tag, 'ubi9')
-          && '3.28.0-1'
-          || '3.4.0-2'
-        }}${{ steps.distribution-meta.outputs.dist-tag }}.noarch.rpm
+        )"/Everything/x86_64/Packages/t/tox-3.28.0-1${{
+          steps.distribution-meta.outputs.dist-tag
+        }}.noarch.rpm
         https://rpmfind.net/linux/epel/"$(
           rpm --eval '%{rhel}'
-        )"/Everything/x86_64/Packages/p/python3-execnet-${{
-          contains(matrix.target-container.tag, 'ubi9')
-          && '1.9.0-3'
-          || '1.7.1-1'
-        }}${{ steps.distribution-meta.outputs.dist-tag }}.noarch.rpm
+        )"/Everything/x86_64/Packages/p/python3-filelock-3.7.1-1${{
+          steps.distribution-meta.outputs.dist-tag
+        }}.noarch.rpm
         https://rpmfind.net/linux/epel/"$(
           rpm --eval '%{rhel}'
-        )"/Everything/x86_64/Packages/p/python3-coverage-${{
-          contains(matrix.target-container.tag, 'ubi9')
-          && '6.2-1'
-          || '4.5.1-9'
-        }}${{ steps.distribution-meta.outputs.dist-tag }}.x86_64.rpm
+        )"/Everything/x86_64/Packages/p/python3-tox-current-env-0.0.16-1${{
+          steps.distribution-meta.outputs.dist-tag
+        }}.noarch.rpm
         https://rpmfind.net/linux/epel/"$(
           rpm --eval '%{rhel}'
-        )"/Everything/x86_64/Packages/p/python3-apipkg-${{
-          contains(matrix.target-container.tag, 'ubi9')
-          && '2.1.1-1'
-          || '1.5-6'
-        }}${{ steps.distribution-meta.outputs.dist-tag }}.noarch.rpm
+        )"/Everything/x86_64/Packages/p/python3-execnet-1.9.0-3${{
+          steps.distribution-meta.outputs.dist-tag
+        }}.noarch.rpm
+        https://rpmfind.net/linux/epel/"$(
+          rpm --eval '%{rhel}'
+        )"/Everything/x86_64/Packages/p/python3-coverage-6.2-1${{
+          steps.distribution-meta.outputs.dist-tag
+        }}.x86_64.rpm
+        https://rpmfind.net/linux/epel/"$(
+          rpm --eval '%{rhel}'
+        )"/Everything/x86_64/Packages/p/python3-expandvars-0.12.0-1${{
+          steps.distribution-meta.outputs.dist-tag
+        }}.noarch.rpm
 
     - name: Install static build requirements
       run: dnf builddep --assumeyes --spec packaging/rpm/ansible-pylibssh.spec
 
-    - name: Fetch sources and patches on a community distro
-      if: >-
-        !contains(matrix.target-container.tag, 'ubi')
+    - name: Fetch sources and patches
       run: >-
         spectool --all --get-files --sourcedir
         packaging/rpm/ansible-pylibssh.spec
 
-    - name: Resolve and install dynamic build deps and build an SRPM on Fedora
+    - name: Resolve and install dynamic build deps and build an SRPM
       # Ref: https://github.com/rpm-software-management/rpm/commit/58dcfdd
-      if: contains(matrix.target-container.tag, 'fedora')
       run: |
         while :
         do
@@ -1195,38 +1159,25 @@ jobs:
             }}.buildreqs.nosrc.rpm
         done
 
-    - name: Build an SRPM on RHELish
-      if: >-
-        !contains(matrix.target-container.tag, 'fedora')
-      run: >-
-        rpmbuild
-        ${{
-            contains(matrix.target-container.tag, 'ubi')
-            && '--undefine=_disable_source_fetch'
-            || ''
-        }}
-        -bs
-        packaging/rpm/ansible-pylibssh.spec
-
     - name: Build binary RPMs
       run: >-
         rpmbuild
         --rebuild
-        $HOME/rpmbuild/SRPMS/python-ansible-pylibssh-${{
+        "$HOME/rpmbuild/SRPMS/python-ansible-pylibssh-${{
             needs.pre-setup.outputs.dist-version
         }}-1${{
           steps.distribution-meta.outputs.dist-tag
-        }}.src.rpm
+        }}.src.rpm"
     - name: Install the packaged binary RPM on the system
       run: >-
         dnf
         install
         --assumeyes
-        $HOME/rpmbuild/RPMS/x86_64/python3-ansible-pylibssh-${{
+        "$HOME/rpmbuild/RPMS/x86_64/python3-ansible-pylibssh-${{
             needs.pre-setup.outputs.dist-version
         }}-1${{
           steps.distribution-meta.outputs.dist-tag
-        }}.x86_64.rpm
+        }}.x86_64.rpm"
 
     - name: Smoke-test the installed library
       run: >-

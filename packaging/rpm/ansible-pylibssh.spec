@@ -9,23 +9,20 @@
 %endif
 
 %global python_importable_name pylibsshext
-# RHEL or CentOS:
-%if 0%{?rhel}
-%global normalized_dist_name ansible_pylibssh
-%global whl_glob %{normalized_dist_name}-%{version}-cp3*-cp3*-linux_%{_arch}.whl
-%endif
 
 %global buildroot_site_packages "%{buildroot}%{python3_sitearch}"
 
 %if 0%{?with_debug}
 %global _dwz_low_mem_die_limit 0
 %else
-# RHEL or CentOS:
-%if 0%{?rhel}
 # Prevent requiring a Build ID in the compiled shared objects
 %global debug_package   %{nil}
 %endif
-%endif
+
+# NOTE: Newer distro versions enable the source_date_epoch_from_changelog macro
+# NOTE: and it breaks because we don't currently include the change log.
+# Ref: https://fedoraproject.org/wiki/Changes/ReproducibleBuildsClampMtimes
+%global source_date_epoch_from_changelog 0
 
 Name:    python-%{pypi_name}
 Version: %{upstream_version}
@@ -36,34 +33,9 @@ Summary: Python bindings for libssh client specific to Ansible use case
 License: LGPL-2+
 URL:     https://github.com/ansible/pylibssh
 Source0: %{pypi_source}
-Source1: %{pypi_source expandvars 0.7.0}
-# RHEL or CentOS:
-%if 0%{?rhel}
-Source2: %{pypi_source build 0.3.1.post1}
-Source3: %{pypi_source Cython 0.29.32}
-Source4: %{pypi_source packaging 20.9}
-Source5: %{pypi_source setuptools 56.0.0}
-Source6: %{pypi_source setuptools_scm 8.1.0}
-Source8: %{pypi_source tomli 2.0.1}
-Source9: %{pypi_source pep517 0.10.0}
-Source10: %{pypi_source pip 21.1.1}
-Source11: %{pypi_source pyparsing 2.4.7}
-# RHEL specifically, not CentOS:
-%if 0%{?centos} == 0
-Source12: %{pypi_source importlib_metadata 4.0.1}
-Source13: %{pypi_source zipp 3.4.1}
-Source14: %{pypi_source typing_extensions 4.12.2}
-%endif
-Source15: %{pypi_source pytest 6.2.4}
-Source16: %{pypi_source pytest-cov 2.12.1}
-Source18: %{pypi_source pytest-xdist 2.3.0}
-Source19: %{pypi_source iniconfig 1.1.1}
-Source20: %{pypi_source attrs 20.3.0}
-Source21: %{pypi_source pluggy 0.13.1}
-Source22: %{pypi_source py 1.10.0}
-Source23: %{pypi_source coverage 5.5}
-Source24: %{pypi_source tomli 1.2.3}
-%endif
+
+# `pyproject-rpm-macros` provides %%pyproject_buildrequires
+BuildRequires: pyproject-rpm-macros
 
 # Test dependencies:
 # keygen?
@@ -72,13 +44,6 @@ BuildRequires: openssh
 BuildRequires: openssh-server
 # ssh?
 BuildRequires: openssh-clients
-# RHEL or CentOS:
-%if 0%{?rhel}
-BuildRequires: python3dist(pytest)
-BuildRequires: python3dist(pytest-cov)
-BuildRequires: python3dist(pytest-xdist)
-BuildRequires: python3dist(tox)
-%endif
 
 # Build dependencies:
 BuildRequires: gcc
@@ -86,27 +51,8 @@ BuildRequires: gcc
 BuildRequires: libssh-devel
 BuildRequires: python3-devel
 
-# RHEL or CentOS:
-%if 0%{?rhel}
-BuildRequires: python3dist(pip)
-BuildRequires: python3dist(wheel)
-# CentOS, not RHEL:
-%if 0%{?centos}
-BuildRequires: python3dist(importlib-metadata)
-%endif
-%endif
-# Fedora:
-%if 0%{?fedora}
-# `pyproject-rpm-macros` provides %%pyproject_buildrequires
-BuildRequires: pyproject-rpm-macros
 
-# `python3-pip` is used to install vendored build deps
-BuildRequires: python3-pip
-
-# `python3-toml` is not retrieved by %%pyproject_buildrequires for some reason
-BuildRequires: python3-toml
-%endif
-
+# Runtime dependencies:
 Requires: libssh >= 0.9.0
 
 %description
@@ -122,133 +68,39 @@ Summary:        %{summary}
 $summary
 
 %prep
-%autosetup -n %{pypi_name}-%{version}
+%autosetup -p1 -n %{pypi_name}-%{version}
 
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE1}
-
-# RHEL or CentOS:
-%if 0%{?rhel}
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE9}
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE2}
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE10}
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin  %{SOURCE3} --install-option="--no-cython-compile"
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE4}
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE5}
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE6}
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE8}
-# RHEL specifically, not CentOS:
-%if 0%{?centos} == 0
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE14}
-%endif
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE11}
-# RHEL specifically, not CentOS:
-%if 0%{?centos} == 0
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE12}
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE13}
-%endif
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE15}
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE16}
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE18}
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE19}
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE20}
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE21}
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE22}
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE23}
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} -m pip install --no-deps -t bin %{SOURCE24}
+%if 0%{?rhel} == 9
+# NOTE: Since RHEL 9 does not have setuptools-scm 7+ in the repos, we change the
+# NOTE: metadata to require a lower version and hope for the best
+sed -i 's/\(.*"setuptools-scm\)[^"]\+\(",.*\)/\1 >= 6\2/g' pyproject.toml
 %endif
 
-# Fedora:
-%if 0%{?fedora}
-PYTHONPATH="$(pwd)/bin" \
 %generate_buildrequires
 %pyproject_buildrequires -t
-%endif
 
 
 %build
 
-# Fedora:
-%if 0%{?fedora}
 %pyproject_wheel
-%endif
-
-# RHEL or CentOS:
-%if 0%{?rhel}
-PYTHONPATH="$(pwd)/bin" \
-%{__python3} \
-  -m build \
-  --wheel \
-  --skip-dependencies \
-  --no-isolation \
-  .
-%endif
 
 
 %install
 
-# Fedora:
-%if 0%{?fedora}
 %pyproject_install
 %pyproject_save_files "%{python_importable_name}"
-%endif
-
-# RHEL or CentOS:
-%if 0%{?rhel}
-%{py3_install_wheel %{whl_glob}}
-# Set the installer to rpm so that pip knows not to manage this dist:
-sed \
-  -i 's/pip/rpm/' \
-  %{buildroot_site_packages}/%{normalized_dist_name}-%{version}.dist-info/INSTALLER
-%endif
 
 
 %check
 
 export PYTHONPATH="%{buildroot_site_packages}:${PYTHONPATH}"
-# Fedora:
-%if "%{?fedora:SET}" == "SET"
 %pyproject_check_import
 %tox -e just-pytest
-# CentOS or RHEL:
-%else
-export PYTHONPATH="$(pwd)/bin:${PYTHONPATH}"
-%{__python3} -m pytest \
-  --no-cov
-%endif
 
 
-%files -n python3-%{pypi_name} %{?fedora:-f} %{?fedora:%{pyproject_files}}
+%files -n python3-%{pypi_name} -f %{pyproject_files}
 %license LICENSE.rst
 %doc README.rst
 
-# RHEL or CentOS
-%if 0%{?rhel}
-# NOTE: %%{python3_sitelib} points to /lib/ while %%{python3_sitearch}
-# NOTE: points to /lib64/ when necessary.
-%{python3_sitearch}/%{python_importable_name}
-%{python3_sitearch}/%{normalized_dist_name}-%{version}.dist-info
-%endif
 
 %changelog
