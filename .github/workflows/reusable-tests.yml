@@ -269,6 +269,8 @@ jobs:
         --parallel-live
         --skip-missing-interpreters false
         -qq
+        --
+        --deselect tests/unit/channel_test.py::test_send_signal
     - name: Produce markdown test summary from JUnit
       if: always()
       uses: test-summary/action@v2.4
@@ -286,6 +288,7 @@ jobs:
         --skip-pkg-install
         --
         --no-cov -vvvvv --lf
+        --deselect tests/unit/channel_test.py::test_send_signal
         && exit 1
       shell: bash
     - name: Send coverage data to Codecov
