@@ -434,7 +434,7 @@ jobs:
     - pre-setup
     runs-on: ubuntu-latest
 
-    timeout-minutes: 2  # network is slow sometimes
+    timeout-minutes: 3  # network is slow sometimes + GH Runners are flaky
 
     env:
       TOXENV: make-changelog
