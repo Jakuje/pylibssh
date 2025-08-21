@@ -31,6 +31,7 @@ OPTS_MAP = {
     "user": libssh.SSH_OPTIONS_USER,
     "port": libssh.SSH_OPTIONS_PORT,
     "timeout": libssh.SSH_OPTIONS_TIMEOUT,
+    "timeout_usec": libssh.SSH_OPTIONS_TIMEOUT_USEC,
     "knownhosts": libssh.SSH_OPTIONS_KNOWNHOSTS,
     "proxycommand": libssh.SSH_OPTIONS_PROXYCOMMAND,
     "key_exchange_algorithms": libssh.SSH_OPTIONS_KEY_EXCHANGE,
@@ -175,7 +176,7 @@ cdef class Session(object):
         elif key == "port":
             value_uint = value
             libssh.ssh_options_set(self._libssh_session, key_m, &value_uint)
-        elif key == "timeout":
+        elif key in {"timeout", "timeout_usec"}:
             value_long = value
             libssh.ssh_options_set(self._libssh_session, key_m, &value_long)
         else:
