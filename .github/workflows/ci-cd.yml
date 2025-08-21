@@ -682,9 +682,14 @@ jobs:
     needs:
     - build-src
     - pre-setup  # transitive, for accessing settings
+    strategy:
+      matrix:
+        runner-vm-os:
+        - ubuntu-24.04-arm
+        - ubuntu-latest
     uses: ./.github/workflows/reusable-cibuildwheel.yml
     with:
-      runner-vm-os: ubuntu-latest
+      runner-vm-os: ${{ matrix.runner-vm-os }}
       timeout-minutes: 9
       source-tarball-name: >-
         ${{ needs.pre-setup.outputs.sdist-artifact-name }}
@@ -708,7 +713,7 @@ jobs:
           && 'CIBW_SKIP<<EOF
           *_i686
           *-musllinux_*
-          *-*linux_{aarch64,ppc64le,s390x}
+          *-*linux_{ppc64le,s390x}
           pp*
         EOF'
           || ''
@@ -762,7 +767,7 @@ jobs:
           && 'CIBW_SKIP<<EOF
           *_i686
           *-musllinux_*
-          *-*linux_x86_64
+          *-*linux_{aarch64,x86_64}
           pp*
         EOF'
           || ''
