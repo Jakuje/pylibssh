@@ -1,0 +1,2 @@
+The CI now runs testing against ARM Ubuntu VMs that
+GitHub Actions CI/CD provide -- by :user:`webknjaz`.
