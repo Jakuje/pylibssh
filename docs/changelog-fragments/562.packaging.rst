@@ -1,2 +1,2 @@
-PyPI now only ships :pep:`660`-compatible manylinux wheels
+PyPI now only ships :pep:`600`-compatible manylinux wheels
 -- by :user:`webknjaz`.
