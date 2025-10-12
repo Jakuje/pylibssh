@@ -1050,7 +1050,10 @@ jobs:
         }}.noarch.rpm
 
     - name: Install static build requirements
-      run: dnf builddep --assumeyes --spec packaging/rpm/${{ env.PROJECT_NAME }}.spec
+      run: >-
+        dnf builddep --assumeyes --spec 'packaging/rpm/${{
+          env.PROJECT_NAME
+        }}.spec'
 
     - name: Fetch sources and patches
       run: >-
@@ -1658,7 +1661,12 @@ jobs:
 
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}/simple/${{ env.PROJECT_NAME }}/
+      url: >-
+        ${{
+          steps.deployment.outputs.page_url
+        }}/simple/${{
+          env.PROJECT_NAME
+        }}/
 
     permissions:
       contents: read  # This job doesn't need to `git push` anything
