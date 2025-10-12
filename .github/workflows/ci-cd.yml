@@ -444,7 +444,7 @@ jobs:
         python -m
         pip install
         --user
-        '${{ env.TOX_VERSION }}'
+        'tox < 4.12'
 
     - name: Pre-populate the tox env
       run: >-
