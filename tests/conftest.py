@@ -131,7 +131,7 @@ def ssh_session_connect_retries(sshd_addr, ssh_clientkey_path):
     """
     Authenticate existing session object against SSHD with a private SSH key.
 
-    This sets ``open_session_retries=100`` and it returns a function
+    This sets ``open_session_retries=1000`` and it returns a function
     that takes session as parameter.
 
     :returns: Function that will connect the session.
@@ -141,7 +141,7 @@ def ssh_session_connect_retries(sshd_addr, ssh_clientkey_path):
         ensure_ssh_session_connected,
         sshd_addr=sshd_addr,
         ssh_clientkey_path=ssh_clientkey_path,
-        ssh_session_retries=100,
+        ssh_session_retries=1000,
     )
 
 
