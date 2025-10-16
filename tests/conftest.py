@@ -95,11 +95,11 @@ def ssh_clientkey_path(sshd_path):
     path = sshd_path / 'ssh_client_ecdsa_key'
     keygen_cmd = (
         'ssh-keygen',
-        '-t', 'ecdsa',
-        '-b', '256',
-        '-C', 'ansible-pylibssh integration tests key',
-        '-N', '',
-        '-f', str(path),
+        '-tecdsa',
+        '-b256',
+        '-Cansible-pylibssh integration tests key',
+        '-N', '',  # empty string for no password
+        f'-f{path!s}',
     )
     subprocess.check_call(keygen_cmd)
     path.chmod(_FILE_PRIV_RW_OWNER)
@@ -190,33 +190,32 @@ def sshd_addr(free_port_num, ssh_authorized_keys_path, sshd_hostkey_path, sshd_p
     # noqa: DAR101
     """
     hostname = '127.0.0.1'
-    opt = '-o'
     cmd = (
         '/usr/sbin/sshd',
         '-D',
-        '-f', '/dev/null',
-        '-E', '/dev/stderr',
-        opt, 'LogLevel=DEBUG3',
-        opt, 'HostKey={key!s}'.format(key=sshd_hostkey_path),
-        opt, 'PidFile={pid!s}'.format(pid=sshd_path / 'sshd.pid'),
+        '-f/dev/null',
+        '-E/dev/stderr',
+        '-oLogLevel=DEBUG3',
+        f'-oHostKey={sshd_hostkey_path!s}',
+        '-oPidFile={pid!s}'.format(pid=sshd_path / 'sshd.pid'),
 
         # NOTE: 'UsePAM no' is not supported on Fedora.
         # Ref: https://bugzilla.redhat.com/show_bug.cgi?id=770756#c1
-        opt, 'UsePAM=yes',
-        opt, 'PasswordAuthentication=no',
-        opt, 'ChallengeResponseAuthentication=no',
-        opt, 'GSSAPIAuthentication=no',
+        '-oUsePAM=yes',
+        '-oPasswordAuthentication=no',
+        '-oChallengeResponseAuthentication=no',
+        '-oGSSAPIAuthentication=no',
 
-        opt, 'StrictModes=no',
-        opt, 'PermitEmptyPasswords=yes',
-        opt, 'PermitRootLogin=yes',
-        opt, 'HostbasedAuthentication=no',
-        opt, 'IgnoreUserKnownHosts=yes',
-        opt, 'Port={port:d}'.format(port=free_port_num),  # port before addr
-        opt, 'ListenAddress={host!s}'.format(host=hostname),  # addr after port
-        opt, 'AuthorizedKeysFile={auth_keys!s}'.format(auth_keys=ssh_authorized_keys_path),
-        opt, 'AcceptEnv=LANG LC_*',
-        opt, 'Subsystem=sftp internal-sftp',
+        '-oStrictModes=no',
+        '-oPermitEmptyPasswords=yes',
+        '-oPermitRootLogin=yes',
+        '-oHostbasedAuthentication=no',
+        '-oIgnoreUserKnownHosts=yes',
+        f'-oPort={free_port_num:d}',  # port before addr
+        f'-oListenAddress={hostname!s}',  # addr after port
+        f'-oAuthorizedKeysFile={ssh_authorized_keys_path!s}',
+        '-oAcceptEnv=LANG LC_*',
+        '-oSubsystem=sftp internal-sftp',
     )
     proc = subprocess.Popen(cmd)
 
