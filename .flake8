@@ -38,16 +38,8 @@ extend-ignore =
   E501,
   # W505: "doc line too long", its function is replaced by `flake8-length`
   W505,
-  # I: flake8-isort is drunk + we have isort integrated into pre-commit
-  I,
   # WPS300: "Found local folder import" -- nothing bad about this
   WPS300,
-  # An opposite consistency expectation is currently enforced
-  # by pylint via: useless-object-inheritance (R0205):
-  # WPS306: "Found class without a base class: *" -- we have metaclass shims
-  WPS306,
-  # WPS326: "Found implicit string concatenation" -- nothing bad about this
-  WPS326,
   # WPS422: "Found future import: *" -- we need these for multipython
   WPS422,
 
@@ -57,7 +49,7 @@ filename =
   # Cython files:
   *.pyx
 
-format = default
+format = wemake
 
 # Let's not overcomplicate the code:
 max-complexity = 10
@@ -74,9 +66,6 @@ per-file-ignores =
   # each should be preceded with an explanation of each of the error codes
   # If other ignores are added for a specific file in the section following this,
   # these will need to be added to that line as well.
-
-  # Sphinx builds aren't supposed to be run under Python 2:
-  docs/conf.py: WPS305
 
   # in-tree PEP517 build backend needs a lot of legit `noqa`s,
   # members and imports:
@@ -97,21 +86,15 @@ per-file-ignores =
 
   # There are multiple `assert`s (S101)
   # and subprocesses (import – S404; call – S603) in tests;
-  # also, using fixtures looks like shadowing the outer scope (WPS442);
-  # furthermore, we should be able to import and test private attributes
-  # (WPS450) and modules (WPS436), and finally it's impossible to
+  # and finally it's impossible to
   # have <= members in tests (WPS202), including many local vars (WPS210):
-  tests/**.py: S101, S404, S603, WPS202, WPS210, WPS436, WPS442, WPS450
+  tests/**.py: S101, S404, S603, WPS202, WPS210
 
 
 # Count the number of occurrences of each error/warning code and print a report:
 statistics = true
 
 # ## Plugin-provided settings: ##
-
-# flake8-eradicate
-# E800:
-eradicate-whitelist-extend = distutils:\s+libraries\s+=\s+|isort:\s+\w+|NAME = "VALUE"
 
 # flake8-pytest-style
 # PT001:
@@ -124,25 +107,6 @@ pytest-parametrize-values-row-type = tuple
 # PT023:
 pytest-mark-no-parentheses = true
 
-# flake8-rst-docstrings
-rst-directives =
-  spelling
-rst-roles =
-  # Built-in Sphinx roles:
-  class,
-  data,
-  file,
-  exc,
-  meth,
-  mod,
-  term,
-  py:class,
-  py:data,
-  py:exc,
-  py:meth,
-  py:term,
-  # Sphinx's internal role:
-  event,
-
 # wemake-python-styleguide
 show-source = true
+show-violation-links = true

@@ -28,11 +28,11 @@ from setuptools.build_meta import (
 
 
 try:
-    from setuptools.build_meta import (  # noqa: WPS433
+    from setuptools.build_meta import (
         build_editable as _setuptools_build_editable,
     )
 except ImportError:
-    _setuptools_build_editable = None  # noqa: WPS440
+    _setuptools_build_editable = None
 
 
 # isort: split
@@ -48,21 +48,19 @@ with suppress(ImportError):
     # NOTE: by `get_requires_for_build_wheel()` and
     # NOTE: `get_requires_for_build_editable()`, when `pure-python`
     # NOTE: is not passed.
-    from Cython.Build.Cythonize import (  # noqa: WPS433
+    from Cython.Build.Cythonize import (
         main as _cythonize_cli_cmd,
     )
 
-from ._compat import chdir_cm, nullcontext_cm  # noqa: WPS436
-from ._cython_configuration import (  # noqa: WPS436
+from ._compat import chdir_cm, nullcontext_cm
+from ._cython_configuration import (
     get_local_cythonize_config as _get_local_cython_config,
 )
-from ._cython_configuration import (  # noqa: WPS436
+from ._cython_configuration import (
     make_cythonize_cli_args_from_config as _make_cythonize_cli_args_from_config,
 )
-from ._cython_configuration import (  # noqa: WPS436
-    patched_env as _patched_cython_env,
-)
-from ._transformers import sanitize_rst_roles  # noqa: WPS436
+from ._cython_configuration import patched_env as _patched_cython_env
+from ._transformers import sanitize_rst_roles
 
 
 __all__ = (  # noqa: WPS410
@@ -84,12 +82,12 @@ __all__ = (  # noqa: WPS410
 CYTHON_TRACING_CONFIG_SETTING = 'with-cython-tracing'  # noqa: WPS462
 """
 Config setting name toggle to include line tracing to C-exts.
-"""  # noqa: WPS322, WPS428
+"""  # noqa: WPS322
 
 CYTHON_TRACING_ENV_VAR = 'ANSIBLE_PYLIBSSH_CYTHON_TRACING'  # noqa: WPS462
 """
 Environment variable name toggle used to opt out of making C-exts.
-"""  # noqa: WPS322, WPS428
+"""  # noqa: WPS322
 
 
 def _is_truthy_setting_value(setting_value: str) -> bool:
@@ -98,13 +96,13 @@ def _is_truthy_setting_value(setting_value: str) -> bool:
 
 
 def _get_setting_value(
-        config_settings: 'dict[str, str] | None' = None,  # noqa: WPS318
+        config_settings: 'dict[str, str] | None' = None,
         config_setting_name: 'str | None' = None,
         env_var_name: 'str | None' = None,
         *,
         default: bool = False,
 ) -> bool:
-    user_provided_setting_sources = (  # noqa: WPS317
+    user_provided_setting_sources = (
         (config_settings, config_setting_name, (KeyError, TypeError)),
         (os.environ, env_var_name, KeyError),
     )
@@ -119,7 +117,7 @@ def _get_setting_value(
 
 
 def _include_cython_line_tracing(
-        config_settings: 'dict[str, str] | None' = None,  # noqa: WPS318
+        config_settings: 'dict[str, str] | None' = None,
         *,
         default=False,
 ) -> bool:
@@ -204,7 +202,7 @@ def _exclude_dir_path(
     ]
     if visited_directory_subdirs_to_ignore:
         print(  # noqa: WPS421
-            f'Preventing `{excluded_dir_path !s}` from being '  # noqa: WPS305
+            f'Preventing `{excluded_dir_path !s}` from being '
             'copied into itself recursively...',
             file=_standard_error_stream,
         )
@@ -232,7 +230,7 @@ def _in_temporary_directory(src_dir: Path) -> t.Iterator[None]:
 
 @contextmanager
 def _prebuild_c_extensions(
-        line_trace_cython_when_unset: bool = False,  # noqa: WPS318
+        line_trace_cython_when_unset: bool = False,
         build_inplace: bool = False,
         config_settings: 'dict[str, str] | None' = None,
 ) -> t.Generator[None, t.Any, t.Any]:
@@ -266,7 +264,7 @@ def _prebuild_c_extensions(
 
 @patched_dist_get_long_description()
 def build_wheel(
-        wheel_directory: str,  # noqa: WPS318
+        wheel_directory: str,
         config_settings: 'dict[str, str] | None' = None,
         metadata_directory: 'str | None' = None,
 ) -> str:
@@ -280,7 +278,7 @@ def build_wheel(
 
     """
     with _prebuild_c_extensions(
-            line_trace_cython_when_unset=False,  # noqa: WPS318
+            line_trace_cython_when_unset=False,
             build_inplace=False,
             config_settings=config_settings,
     ):
@@ -293,7 +291,7 @@ def build_wheel(
 
 @patched_dist_get_long_description()
 def build_editable(
-        wheel_directory: str,  # noqa: WPS318
+        wheel_directory: str,
         config_settings: 'dict[str, str] | None' = None,
         metadata_directory: 'str | None' = None,
 ) -> str:
@@ -307,7 +305,7 @@ def build_editable(
 
     """
     with _prebuild_c_extensions(
-            line_trace_cython_when_unset=True,  # noqa: WPS318
+            line_trace_cython_when_unset=True,
             build_inplace=True,
             config_settings=config_settings,
     ):
@@ -319,7 +317,7 @@ def build_editable(
 
 
 def get_requires_for_build_wheel(
-        config_settings: 'dict[str, str] | None' = None,  # noqa: WPS318
+        config_settings: 'dict[str, str] | None' = None,
 ) -> 'list[str]':
     """Determine additional requirements for building wheels.
 

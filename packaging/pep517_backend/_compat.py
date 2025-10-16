@@ -7,11 +7,11 @@ from pathlib import Path
 
 
 try:
-    from contextlib import chdir as chdir_cm  # noqa: WPS433
+    from contextlib import chdir as chdir_cm
 except ImportError:
 
     @contextmanager  # type: ignore[no-redef]
-    def chdir_cm(path: os.PathLike) -> t.Iterator[None]:  # noqa: WPS440
+    def chdir_cm(path: os.PathLike) -> t.Iterator[None]:
         """Temporarily change the current directory, recovering on exit."""
         original_wd = Path.cwd()
         os.chdir(path)
@@ -22,13 +22,11 @@ except ImportError:
 
 
 try:
-    from contextlib import nullcontext as nullcontext_cm  # noqa: F401, WPS433
+    from contextlib import nullcontext as nullcontext_cm  # noqa: F401
 except ImportError:
 
     @contextmanager  # type: ignore[no-redef]
-    def nullcontext_cm(  # noqa: WPS440
-            enter_result: t.Any = None,  # noqa: WPS318
-    ) -> t.Iterator[t.Any]:
+    def nullcontext_cm(enter_result: t.Any = None) -> t.Iterator[t.Any]:
         """Emit the incoming value.
 
         A no-op context manager.
@@ -38,10 +36,10 @@ except ImportError:
 
 try:
     # Python 3.11+
-    from tomllib import loads as load_toml_from_string  # noqa: WPS433
+    from tomllib import loads as load_toml_from_string
 except ImportError:
     # before Python 3.11
-    from tomli import loads as load_toml_from_string  # noqa: WPS433, WPS440
+    from tomli import loads as load_toml_from_string
 
 
 __all__ = (  # noqa: WPS410

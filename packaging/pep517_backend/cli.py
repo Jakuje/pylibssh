@@ -11,15 +11,13 @@ from pathlib import Path
 from Cython.Compiler.Main import compile as _translate_cython_cli_cmd
 from Cython.Compiler.Main import parse_command_line as _split_cython_cli_args
 
-from ._cython_configuration import (  # noqa: WPS436
+from ._cython_configuration import (
     get_local_cython_config as _get_local_cython_config,
 )
-from ._cython_configuration import (  # noqa: WPS436
+from ._cython_configuration import (
     make_cythonize_cli_args_from_config as _make_cythonize_cli_args_from_config,
 )
-from ._cython_configuration import (  # noqa: WPS436
-    patched_env as _patched_cython_env,
-)
+from ._cython_configuration import patched_env as _patched_cython_env
 
 
 _PROJECT_PATH = Path(__file__).parents[2]
