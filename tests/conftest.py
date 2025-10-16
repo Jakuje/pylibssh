@@ -10,7 +10,7 @@ import subprocess
 from functools import partial
 
 import pytest
-from _service_utils import (  # noqa: WPS436
+from _service_utils import (
     ensure_ssh_session_connected, wait_for_svc_ready_state,
 )
 
@@ -93,7 +93,7 @@ def ssh_clientkey_path(sshd_path):
     # noqa: DAR101
     """
     path = sshd_path / 'ssh_client_ecdsa_key'
-    keygen_cmd = (  # noqa: WPS317
+    keygen_cmd = (
         'ssh-keygen',
         '-t', 'ecdsa',
         '-b', '256',
@@ -191,7 +191,7 @@ def sshd_addr(free_port_num, ssh_authorized_keys_path, sshd_hostkey_path, sshd_p
     """
     hostname = '127.0.0.1'
     opt = '-o'
-    cmd = (  # noqa: WPS317
+    cmd = (
         '/usr/sbin/sshd',
         '-D',
         '-f', '/dev/null',

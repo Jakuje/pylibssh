@@ -9,8 +9,8 @@ from sys import version_info as _python_version_tuple
 
 from expandvars import expandvars
 
-from ._compat import load_toml_from_string  # noqa: WPS436
-from ._transformers import (  # noqa: WPS436
+from ._compat import load_toml_from_string
+from ._transformers import (
     get_cli_kwargs_from_config, get_enabled_cli_flags_from_config,
 )
 
@@ -131,7 +131,7 @@ def get_local_cythonize_config() -> dict:
 
 def make_cythonize_cli_args_from_config(config: dict) -> 'list[str]':
     """Compose ``cythonize`` CLI args from config."""
-    py_ver_arg = f'-{_python_version_tuple.major!s}'  # noqa: WPS305
+    py_ver_arg = f'-{_python_version_tuple.major!s}'
 
     cli_flags = get_enabled_cli_flags_from_config(config['flags'])
     cli_kwargs = get_cli_kwargs_from_config(config['kwargs'])

@@ -78,8 +78,8 @@ def exec_second_command(ssh_channel):
     """Check the standard output of ``exec_command()`` as a string."""
     u_cmd = ssh_channel.exec_command('echo -n Hello Again')
     assert u_cmd.returncode == 0
-    assert u_cmd.stderr.decode() == ''  # noqa: WPS302
-    assert u_cmd.stdout.decode() == u'Hello Again'  # noqa: WPS302
+    assert u_cmd.stderr.decode() == ''
+    assert u_cmd.stdout.decode() == u'Hello Again'
 
 
 def test_exec_command(ssh_channel):
@@ -87,7 +87,7 @@ def test_exec_command(ssh_channel):
     u_cmd = ssh_channel.exec_command('echo -n Hello World')
     assert u_cmd.returncode == 0
     assert u_cmd.stderr.decode() == ''
-    assert u_cmd.stdout.decode() == u'Hello World'  # noqa: WPS302
+    assert u_cmd.stdout.decode() == u'Hello World'
     # Test that repeated calls to exec_command do not segfault.
 
     # NOTE: Call `exec_command()` once again from another function to
@@ -102,7 +102,7 @@ def test_exec_command_stderr(ssh_channel):
     """Test getting the stderr of a remotely executed command."""
     u_cmd = ssh_channel.exec_command('echo -n Hello World 1>&2')
     assert u_cmd.returncode == 0
-    assert u_cmd.stderr.decode() == u'Hello World'  # noqa: WPS302
+    assert u_cmd.stderr.decode() == u'Hello World'
     assert u_cmd.stdout.decode() == ''
 
 
@@ -131,7 +131,7 @@ def test_read_bulk_response(ssh_client_session):
         if timeout == COMMAND_TIMEOUT:
             break
 
-    assert b'Hello World' in response  # noqa: WPS302
+    assert b'Hello World' in response
 
 
 def test_request_exec(ssh_channel):

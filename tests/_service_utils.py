@@ -44,7 +44,7 @@ def wait_for_svc_ready_state(
 
     # noqa: DAR401
     """
-    cmd = [  # noqa: WPS317
+    cmd = [
         '/usr/bin/ssh',
         '-l', getpass.getuser(),
         '-i', str(clientkey_path),
@@ -67,8 +67,8 @@ def wait_for_svc_ready_state(
         raise TimeoutError('Timed out waiting for a successful connection')
 
 
-def ensure_ssh_session_connected(  # noqa: WPS317
-        ssh_session, sshd_addr, ssh_clientkey_path,  # noqa: WPS318
+def ensure_ssh_session_connected(
+        ssh_session, sshd_addr, ssh_clientkey_path,
         ssh_session_retries=0,
 ):
     """Attempt connecting to the SSH server until successful.

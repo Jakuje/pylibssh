@@ -38,7 +38,7 @@ github_sponsors_url = f'{github_url}/sponsors'
 
 project = f'{github_repo_org}-{github_repo_name}'
 author = 'Ansible, Inc.'
-copyright = f'2020, {author}'  # noqa: WPS125
+copyright = f'2020, {author}'
 
 # The short X.Y version
 version = '.'.join(
@@ -140,11 +140,11 @@ master_doc = 'index'
 
 # -- Options for extlinks extension ---------------------------------------
 extlinks = {
-    'issue': (f'{github_repo_url}/issues/%s', '#%s'),  # noqa: WPS323
-    'pr': (f'{github_repo_url}/pull/%s', 'PR #%s'),  # noqa: WPS323
-    'commit': (f'{github_repo_url}/commit/%s', '%s'),  # noqa: WPS323
-    'gh': (f'{github_url}/%s', 'GitHub: %s'),  # noqa: WPS323
-    'user': (f'{github_sponsors_url}/%s', '@%s'),  # noqa: WPS323
+    'issue': (f'{github_repo_url}/issues/%s', '#%s'),
+    'pr': (f'{github_repo_url}/pull/%s', 'PR #%s'),
+    'commit': (f'{github_repo_url}/commit/%s', '%s'),
+    'gh': (f'{github_url}/%s', 'GitHub: %s'),
+    'user': (f'{github_sponsors_url}/%s', '@%s'),
 }
 
 # -- Options for intersphinx extension ---------------------------------------
