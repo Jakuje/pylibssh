@@ -2,7 +2,7 @@
 
 """PEP 517 build backend pre-building Cython exts before setuptools."""
 
-# from __future__ import annotations
+from __future__ import annotations
 
 import os
 import typing as t  # noqa: WPS111
