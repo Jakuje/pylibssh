@@ -227,7 +227,8 @@ def sshd_addr(
     wait_for_svc_ready_state(hostname, free_port_num, ssh_clientkey_path)
 
     if proc.returncode:
-        raise RuntimeError('sshd boom 💣')
+        boom_msg = 'sshd boom 💣'
+        raise RuntimeError(boom_msg)
     try:  # noqa: WPS501
         yield hostname, free_port_num
     finally:

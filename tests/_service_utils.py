@@ -63,7 +63,8 @@ def wait_for_svc_ready_state(
             time.sleep(reconnect_attempt_delay)
 
     if rc != 0:
-        raise TimeoutError('Timed out waiting for a successful connection')
+        timeout_msg = 'Timed out waiting for a successful connection'
+        raise TimeoutError(timeout_msg)
 
 
 def ensure_ssh_session_connected(
