@@ -149,7 +149,7 @@ def patched_dist_has_ext_modules():
     # Without this, build_lib puts stuff under `*.data/platlib/` folder
     orig_func = _DistutilsDistribution.has_ext_modules
 
-    _DistutilsDistribution.has_ext_modules = lambda *args, **kwargs: True
+    _DistutilsDistribution.has_ext_modules = lambda *_args, **_kwargs: True
     try:  # noqa: WPS501
         yield
     finally:
