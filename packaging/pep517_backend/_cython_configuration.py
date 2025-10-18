@@ -141,7 +141,7 @@ def make_cythonize_cli_args_from_config(config: dict) -> list[str]:
 
 
 @contextmanager
-def patched_env(env: dict[str, str], cython_line_tracing_requested: bool):
+def patched_env(env: dict[str, str], *, cython_line_tracing_requested: bool):
     """Temporary set given env vars.
 
     :param env: tmp env vars to set

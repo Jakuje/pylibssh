@@ -221,6 +221,7 @@ def _in_temporary_directory(src_dir: Path) -> t.Iterator[None]:
 
 @contextmanager
 def _prebuild_c_extensions(
+    *,
     line_trace_cython_when_unset: bool = False,
     build_inplace: bool = False,
     config_settings: dict[str, str] | None = None,
@@ -247,7 +248,10 @@ def _prebuild_c_extensions(
         config = _get_local_cython_config()
 
         cythonize_args = _make_cythonize_cli_args_from_config(config)
-        with _patched_cython_env(config['env'], cython_line_tracing_requested):
+        with _patched_cython_env(
+            config['env'],
+            cython_line_tracing_requested=cython_line_tracing_requested,
+        ):
             _cythonize_cli_cmd(cythonize_args)
         with patched_distutils_cmd_install():
             with patched_dist_has_ext_modules():
