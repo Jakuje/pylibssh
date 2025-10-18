@@ -35,7 +35,7 @@ def make_aliased_manylinux_tag(manylinux_tag):
     """Produce a dual tag if it has a modern alias."""
     modern_tag = to_modern_manylinux_tag(manylinux_tag)
     if modern_tag != manylinux_tag:
-        manylinux_tag = '.'.join((modern_tag, manylinux_tag))
+        manylinux_tag = f'{modern_tag}.{manylinux_tag}'
 
     return manylinux_tag
 
