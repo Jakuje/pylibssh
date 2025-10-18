@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Data conversion helpers for the in-tree PEP 517 build backend."""
 
 from itertools import chain

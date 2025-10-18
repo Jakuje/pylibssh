@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Tests for the version info representation."""
 
 import pytest

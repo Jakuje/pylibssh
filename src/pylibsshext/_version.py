@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Version definition."""
 
 from ._libssh_version import (  # noqa: N811, WPS300

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Sanity tests for sshd-related helpers."""
 
 MAX_PORT_NUMBER = 65535

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """PEP 517 build backend pre-building Cython exts before setuptools."""
 
 from __future__ import annotations

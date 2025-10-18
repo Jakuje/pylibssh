@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """PEP 517 build backend pre-building Cython exts before setuptools."""
 
 from contextlib import suppress as _suppress

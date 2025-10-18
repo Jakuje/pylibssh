@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Tests suite for scp."""
 
 import os

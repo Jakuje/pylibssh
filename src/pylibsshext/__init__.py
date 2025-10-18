@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Python bindings for libssh."""
 
 from ._version import (  # noqa: F401, WPS300

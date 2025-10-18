@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # pylint: disable=redefined-outer-name
 
 """Pytest plugins and fixtures configuration."""
