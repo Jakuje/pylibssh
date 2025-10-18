@@ -4,7 +4,7 @@ from contextlib import suppress as _suppress
 
 # Re-exporting PEP 517 hooks
 # pylint: disable-next=unused-wildcard-import,wildcard-import
-from setuptools.build_meta import *  # noqa: E501, F403, WPS347
+from setuptools.build_meta import *  # noqa: F403, WPS347
 
 # Re-exporting PEP 517 hooks
 from ._backend import (  # type: ignore[assignment]
