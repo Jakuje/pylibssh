@@ -38,7 +38,7 @@ github_sponsors_url = f'{github_url}/sponsors'
 
 project = f'{github_repo_org}-{github_repo_name}'
 author = 'Ansible, Inc.'
-copyright = f'2020, {author}'
+copyright = f'2020, {author}'  # noqa: A001  # builtin-variable-shadowing
 
 # The short X.Y version
 version = '.'.join(
