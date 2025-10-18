@@ -41,4 +41,4 @@ def make_aliased_manylinux_tag(manylinux_tag):
 
 
 if __name__ == '__main__':
-    print(make_aliased_manylinux_tag(sys.argv[1]))  # noqa: WPS421
+    print(make_aliased_manylinux_tag(sys.argv[1]))  # noqa: T201, WPS421

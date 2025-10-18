@@ -192,7 +192,7 @@ def _exclude_dir_path(
         if excluded_dir_path == Path(visited_directory) / subdir
     ]
     if visited_directory_subdirs_to_ignore:
-        print(  # noqa: WPS421
+        print(  # noqa: T201, WPS421
             f'Preventing `{excluded_dir_path!s}` from being '
             'copied into itself recursively...',
             file=_standard_error_stream,
