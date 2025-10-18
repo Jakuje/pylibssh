@@ -13,7 +13,7 @@ def _emit_opt_pairs(opt_pair):
         sub_pairs = ((flag_value,),)
 
     for pair in sub_pairs:
-        yield '='.join(map(str, (flag_opt,) + pair))
+        yield '='.join(map(str, (flag_opt, *pair)))
 
 
 def get_cli_kwargs_from_config(kwargs_map):
