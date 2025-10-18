@@ -52,7 +52,8 @@ def wait_for_svc_ready_state(
         '-oUserKnownHostsFile=/dev/null',
         '-oStrictHostKeyChecking=no',
         host,
-        '--', 'exit 0',
+        '--',
+        'exit 0',
     ]
 
     attempts = 0
@@ -68,8 +69,10 @@ def wait_for_svc_ready_state(
 
 
 def ensure_ssh_session_connected(
-        ssh_session, sshd_addr, ssh_clientkey_path,
-        ssh_session_retries=0,
+    ssh_session,
+    sshd_addr,
+    ssh_clientkey_path,
+    ssh_session_retries=0,
 ):
     """Attempt connecting to the SSH server until successful.
 

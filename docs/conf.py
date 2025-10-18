@@ -176,7 +176,6 @@ linkcheck_ignore = [
     r'http://localhost:\d+/',  # local URLs
     r'https://codecov\.io/gh/ansible/pylibssh/branch/devel/graph/badge\.svg',
     r'https://github\.com/ansible/pylibssh/actions',  # 404 if no auth
-
     # Too many links to GitHub so they cause "429 Client Error:
     # too many requests for url"
     # Ref: https://github.com/sphinx-doc/sphinx/issues/7388
@@ -184,7 +183,6 @@ linkcheck_ignore = [
     r'https://github\.com/ansible/pylibssh/pull',
     r'https://github\.com/ansible/ansible/issues',
     r'https://github\.com/ansible/ansible/pull',
-
     # Requires a more liberal 'Accept: ' HTTP request header:
     # Ref: https://github.com/sphinx-doc/sphinx/issues/7247
     r'https://github\.com/ansible/pylibssh/workflows/[^/]+/badge\.svg',
@@ -199,7 +197,9 @@ autosectionlabel_maxdepth = 2  # mitigate Towncrier nested subtitles collision
 
 # -- Options for towncrier_draft extension -----------------------------------
 
-towncrier_draft_autoversion_mode = 'draft'  # or: 'sphinx-version', 'sphinx-release'
+towncrier_draft_autoversion_mode = (
+    'draft'  # or: 'sphinx-version', 'sphinx-release'
+)
 towncrier_draft_include_empty = True
 towncrier_draft_working_directory = PROJECT_ROOT_DIR
 towncrier_draft_config_path = 'pyproject.toml'  # relative to cwd

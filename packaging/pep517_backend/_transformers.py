@@ -76,9 +76,7 @@ def sanitize_rst_roles(rst_source_text: str) -> str:  # noqa: WPS210
     gh_role_regex = r"""(?x)
         :gh:`(?P<gh_slug>[^`<]+)(?:\s+([^`]*))?`
     """
-    gh_substitution_pattern = (
-        r'GitHub: ``\g<gh_slug>``'
-    )
+    gh_substitution_pattern = r'GitHub: ``\g<gh_slug>``'
 
     meth_role_regex = r"""(?x)
         (?::py)?:meth:`~?(?P<rendered_text>[^`<]+)(?:\s+([^`]*))?`

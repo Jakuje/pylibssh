@@ -69,7 +69,8 @@ __all__ = (  # noqa: WPS410
     'get_requires_for_build_wheel',
     'prepare_metadata_for_build_wheel',
     *(
-        () if _setuptools_build_editable is None
+        ()
+        if _setuptools_build_editable is None
         else (
             'build_editable',
             'get_requires_for_build_editable',
@@ -96,11 +97,11 @@ def _is_truthy_setting_value(setting_value: str) -> bool:
 
 
 def _get_setting_value(
-        config_settings: 'dict[str, str] | None' = None,
-        config_setting_name: 'str | None' = None,
-        env_var_name: 'str | None' = None,
-        *,
-        default: bool = False,
+    config_settings: 'dict[str, str] | None' = None,
+    config_setting_name: 'str | None' = None,
+    env_var_name: 'str | None' = None,
+    *,
+    default: bool = False,
 ) -> bool:
     user_provided_setting_sources = (
         (config_settings, config_setting_name, (KeyError, TypeError)),
@@ -117,9 +118,9 @@ def _get_setting_value(
 
 
 def _include_cython_line_tracing(
-        config_settings: 'dict[str, str] | None' = None,
-        *,
-        default=False,
+    config_settings: 'dict[str, str] | None' = None,
+    *,
+    default=False,
 ) -> bool:
     return _get_setting_value(
         config_settings,
@@ -202,7 +203,7 @@ def _exclude_dir_path(
     ]
     if visited_directory_subdirs_to_ignore:
         print(  # noqa: WPS421
-            f'Preventing `{excluded_dir_path !s}` from being '
+            f'Preventing `{excluded_dir_path!s}` from being '
             'copied into itself recursively...',
             file=_standard_error_stream,
         )
@@ -230,9 +231,9 @@ def _in_temporary_directory(src_dir: Path) -> t.Iterator[None]:
 
 @contextmanager
 def _prebuild_c_extensions(
-        line_trace_cython_when_unset: bool = False,
-        build_inplace: bool = False,
-        config_settings: 'dict[str, str] | None' = None,
+    line_trace_cython_when_unset: bool = False,
+    build_inplace: bool = False,
+    config_settings: 'dict[str, str] | None' = None,
 ) -> t.Generator[None, t.Any, t.Any]:
     """Pre-build C-extensions in a temporary directory, when needed.
 
@@ -248,7 +249,8 @@ def _prebuild_c_extensions(
     )
 
     build_dir_ctx = (
-        nullcontext_cm() if build_inplace
+        nullcontext_cm()
+        if build_inplace
         else _in_temporary_directory(src_dir=Path.cwd().resolve())
     )
     with build_dir_ctx:
@@ -264,9 +266,9 @@ def _prebuild_c_extensions(
 
 @patched_dist_get_long_description()
 def build_wheel(
-        wheel_directory: str,
-        config_settings: 'dict[str, str] | None' = None,
-        metadata_directory: 'str | None' = None,
+    wheel_directory: str,
+    config_settings: 'dict[str, str] | None' = None,
+    metadata_directory: 'str | None' = None,
 ) -> str:
     """Produce a built wheel.
 
@@ -278,9 +280,9 @@ def build_wheel(
 
     """
     with _prebuild_c_extensions(
-            line_trace_cython_when_unset=False,
-            build_inplace=False,
-            config_settings=config_settings,
+        line_trace_cython_when_unset=False,
+        build_inplace=False,
+        config_settings=config_settings,
     ):
         return _setuptools_build_wheel(
             wheel_directory=wheel_directory,
@@ -291,9 +293,9 @@ def build_wheel(
 
 @patched_dist_get_long_description()
 def build_editable(
-        wheel_directory: str,
-        config_settings: 'dict[str, str] | None' = None,
-        metadata_directory: 'str | None' = None,
+    wheel_directory: str,
+    config_settings: 'dict[str, str] | None' = None,
+    metadata_directory: 'str | None' = None,
 ) -> str:
     """Produce a built wheel for editable installs.
 
@@ -305,9 +307,9 @@ def build_editable(
 
     """
     with _prebuild_c_extensions(
-            line_trace_cython_when_unset=True,
-            build_inplace=True,
-            config_settings=config_settings,
+        line_trace_cython_when_unset=True,
+        build_inplace=True,
+        config_settings=config_settings,
     ):
         return _setuptools_build_editable(
             wheel_directory=wheel_directory,
@@ -317,7 +319,7 @@ def build_editable(
 
 
 def get_requires_for_build_wheel(
-        config_settings: 'dict[str, str] | None' = None,
+    config_settings: 'dict[str, str] | None' = None,
 ) -> 'list[str]':
     """Determine additional requirements for building wheels.
 
@@ -330,9 +332,12 @@ def get_requires_for_build_wheel(
         'Cython; python_version < "3.12"',
     ]
 
-    return _setuptools_get_requires_for_build_wheel(
-        config_settings=config_settings,
-    ) + c_ext_build_deps
+    return (
+        _setuptools_get_requires_for_build_wheel(
+            config_settings=config_settings,
+        )
+        + c_ext_build_deps
+    )
 
 
 build_sdist = patched_dist_get_long_description()(_setuptools_build_sdist)

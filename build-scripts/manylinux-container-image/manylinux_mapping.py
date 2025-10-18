@@ -21,10 +21,12 @@ ML_LEGACY_TO_MODERN_MAP = {  # noqa: WPS407
 def to_modern_manylinux_tag(legacy_manylinux_tag):
     """Return a modern alias for the tag if it exists."""
     try:
-        return '_'.join((
-            ML_LEGACY_TO_MODERN_MAP[legacy_manylinux_tag],
-            ARCH,
-        ))
+        return '_'.join(
+            (
+                ML_LEGACY_TO_MODERN_MAP[legacy_manylinux_tag],
+                ARCH,
+            ),
+        )
     except KeyError:
         return legacy_manylinux_tag
 

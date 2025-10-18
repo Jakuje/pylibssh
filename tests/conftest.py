@@ -11,7 +11,8 @@ from functools import partial
 
 import pytest
 from _service_utils import (
-    ensure_ssh_session_connected, wait_for_svc_ready_state,
+    ensure_ssh_session_connected,
+    wait_for_svc_ready_state,
 )
 
 from pylibsshext.session import Session
@@ -98,7 +99,8 @@ def ssh_clientkey_path(sshd_path):
         '-tecdsa',
         '-b256',
         '-Cansible-pylibssh integration tests key',
-        '-N', '',  # empty string for no password
+        '-N',
+        '',  # empty string for no password
         f'-f{path!s}',
     )
     subprocess.check_call(keygen_cmd)
@@ -179,7 +181,13 @@ def ssh_authorized_keys_path(sshd_path, ssh_clientkey_path):
 
 
 @pytest.fixture
-def sshd_addr(free_port_num, ssh_authorized_keys_path, sshd_hostkey_path, sshd_path, ssh_clientkey_path):
+def sshd_addr(
+    free_port_num,
+    ssh_authorized_keys_path,
+    sshd_hostkey_path,
+    sshd_path,
+    ssh_clientkey_path,
+):
     """Spawn an instance of sshd on a free port.
 
     :raises RuntimeError: If spawning SSHD failed.
@@ -198,14 +206,12 @@ def sshd_addr(free_port_num, ssh_authorized_keys_path, sshd_hostkey_path, sshd_p
         '-oLogLevel=DEBUG3',
         f'-oHostKey={sshd_hostkey_path!s}',
         '-oPidFile={pid!s}'.format(pid=sshd_path / 'sshd.pid'),
-
         # NOTE: 'UsePAM no' is not supported on Fedora.
         # Ref: https://bugzilla.redhat.com/show_bug.cgi?id=770756#c1
         '-oUsePAM=yes',
         '-oPasswordAuthentication=no',
         '-oChallengeResponseAuthentication=no',
         '-oGSSAPIAuthentication=no',
-
         '-oStrictModes=no',
         '-oPermitEmptyPasswords=yes',
         '-oPermitRootLogin=yes',
