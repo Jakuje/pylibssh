@@ -53,7 +53,7 @@ from ._cython_configuration import (
 from ._transformers import sanitize_rst_roles
 
 
-__all__ = (  # noqa: WPS410
+__all__ = (  # noqa: PLE0604, WPS410
     'build_sdist',
     'build_wheel',
     'get_requires_for_build_wheel',
