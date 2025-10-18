@@ -6,7 +6,7 @@ from re import sub as _substitute_with_regexp
 
 def _emit_opt_pairs(opt_pair):
     flag, flag_value = opt_pair
-    flag_opt = '--{name!s}'.format(name=flag)
+    flag_opt = f'--{flag!s}'
     if isinstance(flag_value, dict):
         sub_pairs = flag_value.items()
     else:
@@ -24,9 +24,7 @@ def get_cli_kwargs_from_config(kwargs_map):
 def get_enabled_cli_flags_from_config(flags_map):
     """Make a list of enabled boolean flags from config."""
     return [
-        '--{flag}'.format(flag=flag)
-        for flag, is_enabled in flags_map.items()
-        if is_enabled
+        f'--{flag}' for flag, is_enabled in flags_map.items() if is_enabled
     ]
 
 

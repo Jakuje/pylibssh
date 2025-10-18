@@ -67,7 +67,7 @@ def dst_path(file_paths_pair):
 def other_payload():
     """Generate a binary test payload."""
     uuid_name = uuid.uuid4()
-    return 'Original content: {name!s}'.format(name=uuid_name).encode()
+    return f'Original content: {uuid_name!s}'.encode()
 
 
 @pytest.fixture

@@ -14,10 +14,7 @@ except ImportError:
 
 
 __full_version__ = (
-    '<pylibsshext v{wrapper_ver!s} with libssh v{backend_ver!s}>'.format(
-        wrapper_ver=__version__,
-        backend_ver=__libssh_version__,
-    )
+    f'<pylibsshext v{__version__!s} with libssh v{__libssh_version__!s}>'
 )
 __version_info__ = tuple(
     (int(chunk) if chunk.isdigit() else chunk)
