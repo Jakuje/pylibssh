@@ -57,7 +57,7 @@ def wait_for_svc_ready_state(
     attempts = 0
     rc = -1
     while attempts < max_conn_attempts and rc != 0:
-        check_result = subprocess.run(cmd)
+        check_result = subprocess.run(cmd, check=False)
         rc = check_result.returncode
         if rc != 0:
             time.sleep(reconnect_attempt_delay)
