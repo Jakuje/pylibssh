@@ -1,0 +1,4 @@
+The repository is now set up to auto-format Python files with Ruff.
+Cython keeps being formatted by ``cython-lint``.
+
+-- by :user:`webknjaz`
