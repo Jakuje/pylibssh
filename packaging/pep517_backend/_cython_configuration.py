@@ -11,7 +11,8 @@ from expandvars import expandvars
 
 from ._compat import load_toml_from_string
 from ._transformers import (
-    get_cli_kwargs_from_config, get_enabled_cli_flags_from_config,
+    get_cli_kwargs_from_config,
+    get_enabled_cli_flags_from_config,
 )
 
 

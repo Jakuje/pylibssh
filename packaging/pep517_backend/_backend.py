@@ -13,14 +13,8 @@ from tempfile import TemporaryDirectory
 
 from setuptools.build_meta import (  # noqa: F401
     build_sdist as _setuptools_build_sdist,
-)
-from setuptools.build_meta import (  # noqa: F401
     build_wheel as _setuptools_build_wheel,
-)
-from setuptools.build_meta import (
     get_requires_for_build_wheel as _setuptools_get_requires_for_build_wheel,
-)
-from setuptools.build_meta import (
     prepare_metadata_for_build_wheel as _setuptools_prepare_metadata_for_build_wheel,
 )
 
@@ -53,11 +47,9 @@ with suppress(ImportError):
 from ._compat import chdir_cm, nullcontext_cm
 from ._cython_configuration import (
     get_local_cythonize_config as _get_local_cython_config,
-)
-from ._cython_configuration import (
     make_cythonize_cli_args_from_config as _make_cythonize_cli_args_from_config,
+    patched_env as _patched_cython_env,
 )
-from ._cython_configuration import patched_env as _patched_cython_env
 from ._transformers import sanitize_rst_roles
 
 
