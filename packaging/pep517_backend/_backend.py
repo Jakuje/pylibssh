@@ -95,9 +95,9 @@ def _is_truthy_setting_value(setting_value: str) -> bool:
 
 
 def _get_setting_value(
-    config_settings: 'dict[str, str] | None' = None,
-    config_setting_name: 'str | None' = None,
-    env_var_name: 'str | None' = None,
+    config_settings: dict[str, str] | None = None,
+    config_setting_name: str | None = None,
+    env_var_name: str | None = None,
     *,
     default: bool = False,
 ) -> bool:
@@ -116,7 +116,7 @@ def _get_setting_value(
 
 
 def _include_cython_line_tracing(
-    config_settings: 'dict[str, str] | None' = None,
+    config_settings: dict[str, str] | None = None,
     *,
     default=False,
 ) -> bool:
@@ -188,8 +188,8 @@ def patched_dist_get_long_description():
 def _exclude_dir_path(
     excluded_dir_path: Path,
     visited_directory: str,
-    _visited_dir_contents: 'list[str]',
-) -> 'list[str]':
+    _visited_dir_contents: list[str],
+) -> list[str]:
     """Prevent recursive directory traversal."""
     # This stops the temporary directory from being copied
     # into self recursively forever.
@@ -231,7 +231,7 @@ def _in_temporary_directory(src_dir: Path) -> t.Iterator[None]:
 def _prebuild_c_extensions(
     line_trace_cython_when_unset: bool = False,
     build_inplace: bool = False,
-    config_settings: 'dict[str, str] | None' = None,
+    config_settings: dict[str, str] | None = None,
 ) -> t.Generator[None, t.Any, t.Any]:
     """Pre-build C-extensions in a temporary directory, when needed.
 
@@ -265,8 +265,8 @@ def _prebuild_c_extensions(
 @patched_dist_get_long_description()
 def build_wheel(
     wheel_directory: str,
-    config_settings: 'dict[str, str] | None' = None,
-    metadata_directory: 'str | None' = None,
+    config_settings: dict[str, str] | None = None,
+    metadata_directory: str | None = None,
 ) -> str:
     """Produce a built wheel.
 
@@ -292,8 +292,8 @@ def build_wheel(
 @patched_dist_get_long_description()
 def build_editable(
     wheel_directory: str,
-    config_settings: 'dict[str, str] | None' = None,
-    metadata_directory: 'str | None' = None,
+    config_settings: dict[str, str] | None = None,
+    metadata_directory: str | None = None,
 ) -> str:
     """Produce a built wheel for editable installs.
 
@@ -317,8 +317,8 @@ def build_editable(
 
 
 def get_requires_for_build_wheel(
-    config_settings: 'dict[str, str] | None' = None,
-) -> 'list[str]':
+    config_settings: dict[str, str] | None = None,
+) -> list[str]:
     """Determine additional requirements for building wheels.
 
     :param config_settings: :pep:`517` config settings mapping.

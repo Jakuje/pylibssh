@@ -129,7 +129,7 @@ def get_local_cythonize_config() -> dict:
     return config_mapping['tool']['local']['cythonize']
 
 
-def make_cythonize_cli_args_from_config(config: dict) -> 'list[str]':
+def make_cythonize_cli_args_from_config(config: dict) -> list[str]:
     """Compose ``cythonize`` CLI args from config."""
     py_ver_arg = f'-{_python_version_tuple.major!s}'
 
@@ -140,7 +140,7 @@ def make_cythonize_cli_args_from_config(config: dict) -> 'list[str]':
 
 
 @contextmanager
-def patched_env(env: 'dict[str, str]', cython_line_tracing_requested: bool):
+def patched_env(env: dict[str, str], cython_line_tracing_requested: bool):
     """Temporary set given env vars.
 
     :param env: tmp env vars to set

@@ -23,7 +23,7 @@ from ._cython_configuration import patched_env as _patched_cython_env
 _PROJECT_PATH = Path(__file__).parents[2]
 
 
-def run_main_program(argv) -> 'int | str':
+def run_main_program(argv) -> int | str:
     """Invoke ``translate-cython`` or fail."""
     if len(argv) != 2:
         return 'This program only accepts one argument -- "translate-cython"'
