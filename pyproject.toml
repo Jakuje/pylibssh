@@ -43,11 +43,10 @@ lenient = false
 keep-going = false
 
 [tool.local.cython.kwargs]
-# This section can contain args tha have values:
+# This section can contain args that have values:
 # * exclude=PATTERN      exclude certain file patterns from the compilation
 # * parallel=N    run builds in N parallel jobs (default: calculated per system)
 # exclude = "**.py"
-# parallel = 12
 
 [tool.local.cython.kwargs.directive]
 # This section can contain compiler directives
@@ -97,7 +96,7 @@ lenient = false
 keep-going = false
 
 [tool.local.cythonize.kwargs]
-# This section can contain args tha have values:
+# This section can contain args that have values:
 # * exclude=PATTERN      exclude certain file patterns from the compilation
 # * parallel=N    run builds in N parallel jobs (default: calculated per system)
 # exclude = "**.py"
