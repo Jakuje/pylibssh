@@ -1,10 +1,10 @@
-"""PEP 517 build backend pre-building Cython exts before setuptools."""
+"""PEP 517 build backend wrapper for pre-building Cython for wheel."""
 
 from __future__ import annotations
 
 import os
-import typing as t  # noqa: WPS111
-from contextlib import contextmanager, suppress
+import typing as _t  # noqa: WPS111
+from contextlib import contextmanager, nullcontext, suppress
 from functools import partial
 from pathlib import Path
 from shutil import copytree
@@ -24,7 +24,7 @@ try:
         build_editable as _setuptools_build_editable,
     )
 except ImportError:
-    _setuptools_build_editable = None
+    _setuptools_build_editable = None  # type: ignore[assignment]
 
 
 # isort: split
@@ -44,13 +44,17 @@ with suppress(ImportError):
         main as _cythonize_cli_cmd,
     )
 
-from ._compat import chdir_cm, nullcontext_cm
+from ._compat import chdir_cm
 from ._cython_configuration import (
     get_local_cythonize_config as _get_local_cython_config,
     make_cythonize_cli_args_from_config as _make_cythonize_cli_args_from_config,
     patched_env as _patched_cython_env,
 )
 from ._transformers import sanitize_rst_roles
+
+
+if _t.TYPE_CHECKING:
+    import collections.abc as _c  # noqa: WPS111, WPS301
 
 
 __all__ = (  # noqa: PLE0604, WPS410
@@ -60,7 +64,7 @@ __all__ = (  # noqa: PLE0604, WPS410
     'prepare_metadata_for_build_wheel',
     *(
         ()
-        if _setuptools_build_editable is None
+        if _setuptools_build_editable is None  # type: ignore[redundant-expr]
         else (
             'build_editable',
             'get_requires_for_build_editable',
@@ -68,6 +72,9 @@ __all__ = (  # noqa: PLE0604, WPS410
         )
     ),
 )
+
+
+_ConfigDict = dict[str, str | list[str] | None]
 
 
 CYTHON_TRACING_CONFIG_SETTING = 'with-cython-tracing'  # noqa: WPS462
@@ -87,7 +94,7 @@ def _is_truthy_setting_value(setting_value: str) -> bool:
 
 
 def _get_setting_value(
-    config_settings: dict[str, str] | None = None,
+    config_settings: _ConfigDict | None = None,
     config_setting_name: str | None = None,
     env_var_name: str | None = None,
     *,
@@ -102,15 +109,15 @@ def _get_setting_value(
             continue
 
         with suppress(lookup_errors):  # type: ignore[arg-type]
-            return _is_truthy_setting_value(src_mapping[src_key])  # type: ignore[index]
+            return _is_truthy_setting_value(src_mapping[src_key])  # type: ignore[arg-type,index]
 
     return default
 
 
 def _include_cython_line_tracing(
-    config_settings: dict[str, str] | None = None,
+    config_settings: _ConfigDict | None = None,
     *,
-    default=False,
+    default: bool = False,
 ) -> bool:
     return _get_setting_value(
         config_settings,
@@ -121,7 +128,7 @@ def _include_cython_line_tracing(
 
 
 @contextmanager
-def patched_distutils_cmd_install():
+def patched_distutils_cmd_install() -> _c.Iterator[None]:
     """Make `install_lib` of `install` cmd always use `platlib`.
 
     :yields: None
@@ -129,19 +136,21 @@ def patched_distutils_cmd_install():
     # Without this, build_lib puts stuff under `*.data/purelib/` folder
     orig_finalize = _distutils_install_cmd.finalize_options
 
-    def new_finalize_options(self):  # noqa: WPS430
+    def new_finalize_options(  # noqa: WPS430
+        self: _distutils_install_cmd,
+    ) -> None:
         self.install_lib = self.install_platlib
         orig_finalize(self)
 
-    _distutils_install_cmd.finalize_options = new_finalize_options
+    _distutils_install_cmd.finalize_options = new_finalize_options  # type: ignore[method-assign]
     try:  # noqa: WPS501
         yield
     finally:
-        _distutils_install_cmd.finalize_options = orig_finalize
+        _distutils_install_cmd.finalize_options = orig_finalize  # type: ignore[method-assign]
 
 
 @contextmanager
-def patched_dist_has_ext_modules():
+def patched_dist_has_ext_modules() -> _c.Iterator[None]:
     """Make `has_ext_modules` of `Distribution` always return `True`.
 
     :yields: None
@@ -149,15 +158,15 @@ def patched_dist_has_ext_modules():
     # Without this, build_lib puts stuff under `*.data/platlib/` folder
     orig_func = _DistutilsDistribution.has_ext_modules
 
-    _DistutilsDistribution.has_ext_modules = lambda *_args, **_kwargs: True
+    _DistutilsDistribution.has_ext_modules = lambda *_args, **_kwargs: True  # type: ignore[method-assign]
     try:  # noqa: WPS501
         yield
     finally:
-        _DistutilsDistribution.has_ext_modules = orig_func
+        _DistutilsDistribution.has_ext_modules = orig_func  # type: ignore[method-assign]
 
 
 @contextmanager
-def patched_dist_get_long_description():
+def patched_dist_get_long_description() -> _c.Iterator[None]:
     """Make `has_ext_modules` of `Distribution` always return `True`.
 
     :yields: None
@@ -165,16 +174,19 @@ def patched_dist_get_long_description():
     # Without this, build_lib puts stuff under `*.data/platlib/` folder
     orig_func = _DistutilsDistributionMetadata.get_long_description
 
-    def _get_sanitized_long_description(self):  # noqa: WPS430
+    def _get_sanitized_long_description(  # noqa: WPS430
+        self: _DistutilsDistributionMetadata,
+    ) -> str:
+        assert self.long_description is not None  # noqa: S101  # typing
         return sanitize_rst_roles(self.long_description)
 
-    _DistutilsDistributionMetadata.get_long_description = (
+    _DistutilsDistributionMetadata.get_long_description = (  # type: ignore[method-assign]
         _get_sanitized_long_description
     )
     try:
         yield
     finally:
-        _DistutilsDistributionMetadata.get_long_description = orig_func
+        _DistutilsDistributionMetadata.get_long_description = orig_func  # type: ignore[method-assign]
 
 
 def _exclude_dir_path(
@@ -201,7 +213,7 @@ def _exclude_dir_path(
 
 
 @contextmanager
-def _in_temporary_directory(src_dir: Path) -> t.Iterator[None]:
+def _in_temporary_directory(src_dir: Path) -> _c.Iterator[None]:
     with TemporaryDirectory(prefix='.tmp-ansible-pylibssh-pep517-') as tmp_dir:
         tmp_dir_path = Path(tmp_dir)
         root_tmp_dir_path = tmp_dir_path.parent
@@ -224,8 +236,8 @@ def _prebuild_c_extensions(
     *,
     line_trace_cython_when_unset: bool = False,
     build_inplace: bool = False,
-    config_settings: dict[str, str] | None = None,
-) -> t.Generator[None, t.Any, t.Any]:
+    config_settings: _ConfigDict | None = None,
+) -> _c.Iterator[None]:
     """Pre-build C-extensions in a temporary directory, when needed.
 
     This context manager also patches metadata, setuptools and distutils.
@@ -240,19 +252,21 @@ def _prebuild_c_extensions(
     )
 
     build_dir_ctx = (
-        nullcontext_cm()
+        nullcontext()
         if build_inplace
         else _in_temporary_directory(src_dir=Path.cwd().resolve())
     )
     with build_dir_ctx:
         config = _get_local_cython_config()
 
-        cythonize_args = _make_cythonize_cli_args_from_config(config)
+        cythonize_args = _make_cythonize_cli_args_from_config(
+            config,
+        )
         with _patched_cython_env(
             config['env'],
             cython_line_tracing_requested=cython_line_tracing_requested,
         ):
-            _cythonize_cli_cmd(cythonize_args)
+            _cythonize_cli_cmd(cythonize_args)  # type: ignore[no-untyped-call]
         with patched_distutils_cmd_install():
             with patched_dist_has_ext_modules():
                 yield
@@ -261,7 +275,7 @@ def _prebuild_c_extensions(
 @patched_dist_get_long_description()
 def build_wheel(
     wheel_directory: str,
-    config_settings: dict[str, str] | None = None,
+    config_settings: _ConfigDict | None = None,
     metadata_directory: str | None = None,
 ) -> str:
     """Produce a built wheel.
@@ -288,7 +302,7 @@ def build_wheel(
 @patched_dist_get_long_description()
 def build_editable(
     wheel_directory: str,
-    config_settings: dict[str, str] | None = None,
+    config_settings: _ConfigDict | None = None,
     metadata_directory: str | None = None,
 ) -> str:
     """Produce a built wheel for editable installs.
@@ -313,7 +327,7 @@ def build_editable(
 
 
 def get_requires_for_build_wheel(
-    config_settings: dict[str, str] | None = None,
+    config_settings: _ConfigDict | None = None,
 ) -> list[str]:
     """Determine additional requirements for building wheels.
 

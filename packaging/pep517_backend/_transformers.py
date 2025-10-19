@@ -1,14 +1,23 @@
 """Data conversion helpers for the in-tree PEP 517 build backend."""
 
+from __future__ import annotations
+
+import typing as _t  # noqa: WPS111
 from itertools import chain
 from re import sub as _substitute_with_regexp
 
 
-def _emit_opt_pairs(opt_pair):
+if _t.TYPE_CHECKING:
+    import collections.abc as _c  # noqa: WPS111, WPS301
+
+
+def _emit_opt_pairs(
+    opt_pair: tuple[str, dict[str, str] | str],
+) -> _c.Iterator[str]:
     flag, flag_value = opt_pair
     flag_opt = f'--{flag!s}'
     if isinstance(flag_value, dict):
-        sub_pairs = flag_value.items()
+        sub_pairs: _c.Iterable[tuple[str, ...]] = flag_value.items()
     else:
         sub_pairs = ((flag_value,),)
 
@@ -16,12 +25,16 @@ def _emit_opt_pairs(opt_pair):
         yield '='.join(map(str, (flag_opt, *pair)))
 
 
-def get_cli_kwargs_from_config(kwargs_map):
+def get_cli_kwargs_from_config(
+    kwargs_map: dict[str, str | dict[str, str]],
+) -> list[str]:
     """Make a list of options with values from config."""
     return list(chain.from_iterable(map(_emit_opt_pairs, kwargs_map.items())))
 
 
-def get_enabled_cli_flags_from_config(flags_map):
+def get_enabled_cli_flags_from_config(
+    flags_map: _c.Mapping[str, bool],
+) -> list[str]:
     """Make a list of enabled boolean flags from config."""
     return [
         f'--{flag}' for flag, is_enabled in flags_map.items() if is_enabled

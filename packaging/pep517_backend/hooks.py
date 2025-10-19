@@ -1,4 +1,4 @@
-"""PEP 517 build backend pre-building Cython exts before setuptools."""
+"""PEP 517 build backend for optionally pre-building Cython."""
 
 from contextlib import suppress as _suppress
 
