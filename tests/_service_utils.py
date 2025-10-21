@@ -44,11 +44,17 @@ def wait_for_svc_ready_state(
     """
     cmd = [
         '/usr/bin/ssh',
-        f'-l{getpass.getuser()!s}',
-        f'-i{clientkey_path!s}',
-        f'-p{port!s}',
-        '-oUserKnownHostsFile=/dev/null',
+        '-F/dev/null',  # or -Fnone
+        '-oConnectTimeout=1',
+        '-oIdentitiesOnly=yes',
+        '-oIdentityAgent=/dev/null',
+        f'-oIdentityFile={clientkey_path!s}',
+        '-oPasswordAuthentication=no',
+        f'-oPort={port!s}',
+        '-oPreferredAuthentications=publickey',
         '-oStrictHostKeyChecking=no',
+        f'-oUser={getpass.getuser()!s}',
+        '-oUserKnownHostsFile=/dev/null',
         host,
         '--',
         'exit 0',
