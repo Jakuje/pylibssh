@@ -1,0 +1,2 @@
+Added "macos-15-intel" as vm runner as "macos-13" is not being supported anymore
+The change includes giving the macOS build job more time to complete as the new version is a little slower -- by :user:`komaldesai13`
