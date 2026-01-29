@@ -579,11 +579,11 @@ jobs:
     strategy:
       matrix:
         runner-vm-os:
-        - macos-13
+        - macos-15-intel
     uses: ./.github/workflows/reusable-cibuildwheel.yml
     with:
       runner-vm-os: ${{ matrix.runner-vm-os }}
-      timeout-minutes: 9
+      timeout-minutes: 10
       source-tarball-name: >-
         ${{ needs.pre-setup.outputs.sdist-artifact-name }}
       dists-artifact-name: >-
@@ -1168,7 +1168,7 @@ jobs:
         - "3.10"
         - 3.9
         runner-vm-os:
-        - macos-13
+        - macos-15-intel
         dist-type:
         - binary
         - source
