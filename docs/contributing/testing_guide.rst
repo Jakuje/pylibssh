@@ -51,7 +51,7 @@ on your system for build to succeed.
 
 The next external build-time dependency is `Cython
 <cython:index>` and `using it
-<cython:src/quickstart/install>` requires presense of GCC_.
+<cython:src/quickstart/install>` requires presence of GCC_.
 Consult with your OS's docs to figure out how to get it onto
 your machine.
 

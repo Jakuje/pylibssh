@@ -23,7 +23,7 @@ def wait_for_svc_ready_state(
     max_conn_attempts=40,
     reconnect_attempt_delay=_DEFAULT_RECONNECT_ATTEMPT_DELAY,
 ):
-    """Verify that the serivce is up and running.
+    """Verify that the service is up and running.
 
     :param host: Hostname.
     :type host: str

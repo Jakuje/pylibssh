@@ -503,7 +503,7 @@ cdef class Session(object):
                 rc = libssh.ssh_userauth_kbdint_setanswer(self._libssh_session, prompt, password.encode())
 
             # We need to keep calling ssh_userauth_kbdint until it stops returning SSH_AUTH_INFO
-            # (ie, asking for more information and has made a decison as to whether we are allowed in)
+            # (ie, asking for more information and has made a decision as to whether we are allowed in)
             rc = libssh.ssh_userauth_kbdint(self._libssh_session, NULL, NULL)
 
         if rc in (libssh.SSH_AUTH_ERROR, libssh.SSH_AUTH_DENIED):

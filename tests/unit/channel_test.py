@@ -212,7 +212,7 @@ def test_destructor(ssh_session_connect):
     # Without fix, garbage collector first deletes session and we segfault
     # in channel destructor when trying to access low-level C session object.
     gc.disable()
-    try:  # noqa: WPS229, WPS501  # we need to reenable gc if anything happens
+    try:  # noqa: WPS229, WPS501  # we need to re-enable gc if anything happens
         gc.collect()
         _do_not_crash()
         gc.collect(0)  # the test will segfault without the fix

@@ -30,7 +30,7 @@ def transmit_payload(request: pytest.FixtureRequest):
     The choice 32 is arbitrary small value.
 
     The choice SCP_CHUNK_SIZE + 1 (64kB + 1B) is meant to be 1B larger than the chunk
-    size used in :file:`scp.pyx` to make sure we excercise at least two rounds of
+    size used in :file:`scp.pyx` to make sure we exercise at least two rounds of
     reading/writing.
     """
     payload_len = request.param

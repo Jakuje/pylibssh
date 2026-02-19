@@ -888,7 +888,7 @@ Miscellaneous
   -- by :user:`webknjaz` and :user:`TomasTomecek`
   (:issue:`227`,
   :issue:`246`)
-- Removed the remains of Python 2 compatiblity code from the in-tree :pep:`517` build backend -- by :user:`webknjaz`
+- Removed the remains of Python 2 compatibility code from the in-tree :pep:`517` build backend -- by :user:`webknjaz`
   (:issue:`377`)
 - Fixed removing ``expandvars`` from ``pyproject.toml``
   in an RPM spec -- by :user:`webknjaz`
@@ -925,7 +925,7 @@ Miscellaneous
 
 - Reworked build scripts to fix manylinux container generation -- by :user:`Qalthos`
   (:issue:`321`)
-- Reenable CI building on s390x -- by :user:`Qalthos`
+- Re-enable CI building on s390x -- by :user:`Qalthos`
   (:issue:`322`)
 
 
@@ -1117,7 +1117,7 @@ Features
   API's initial commit -- by :user:`ganeshrn`
   (:issue:`1`)
 - Added proxycommand support for session and
-  update session exeception to ``LibsshSessionException`` -- by :user:`ganeshrn`
+  update session exception to ``LibsshSessionException`` -- by :user:`ganeshrn`
   (:issue:`10`)
 - Added support for host key checking with
   authentication -- by :user:`ganeshrn`
