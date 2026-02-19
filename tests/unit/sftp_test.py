@@ -30,7 +30,7 @@ def transmit_payload(request: pytest.FixtureRequest) -> bytes:
     The choice 32 is arbitrary small value.
 
     The choice SFTP_MAX_CHUNK + 1 (32kB + 1B) is meant to be 1B larger than the chunk
-    size used in :file:`sftp.pyx` to make sure we excercise at least two rounds of
+    size used in :file:`sftp.pyx` to make sure we exercise at least two rounds of
     reading/writing.
     """
     payload_len = request.param
