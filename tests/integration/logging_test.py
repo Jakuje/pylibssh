@@ -137,3 +137,17 @@ def test_session_log_level_bad():
     error_msg = r'^Invalid log level \[99\]$'
     with pytest.raises(LibsshSessionException, match=error_msg):
         ssh_session.set_log_level(BAD_LOG_LEVEL)
+
+
+def test_session_log_verbosity_session(
+    caplog: pytest.LogCaptureFixture,
+    free_port_num: int,
+) -> None:
+    """Test setting the log level through the Session initializer."""
+    ssh_session = Session(log_verbosity=ANSIBLE_PYLIBSSH_TRACE)
+
+    with _ctx.suppress(LibsshSessionException):
+        ssh_session.connect(host=LOCALHOST, port=free_port_num)
+
+    expected_poll_message = 'ssh_socket_pollcallback: Poll callback on socket'
+    assert expected_poll_message in caplog.text
