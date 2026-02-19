@@ -67,6 +67,10 @@ per-file-ignores =
   # If other ignores are added for a specific file in the section following this,
   # these will need to be added to that line as well.
 
+  # ANN001 Missing type annotation for function argument 'legacy_manylinux_tag' — FIXME
+  # ANN201 Missing return type annotation for public function — FIXME
+  build-scripts/manylinux-container-image/manylinux_mapping.py: ANN001, ANN201
+
   # in-tree PEP517 build backend needs a lot of legit `noqa`s,
   # members and imports:
   packaging/pep517_backend/_backend.py: WPS201, WPS202, WPS402
@@ -88,7 +92,10 @@ per-file-ignores =
   # and subprocesses (import – S404; call – S603) in tests;
   # and finally it's impossible to
   # have <= members in tests (WPS202), including many local vars (WPS210):
-  tests/**.py: S101, S404, S603, WPS202, WPS210
+  # ANN001 Missing type annotation for function argument 'legacy_manylinux_tag' — FIXME
+  # ANN201 Missing return type annotation for public function — FIXME
+  # ANN202 Missing return type annotation for protected function — FIXME
+  tests/**.py: ANN001, ANN201, ANN202, S101, S404, S603, WPS202, WPS210
 
 
 # Count the number of occurrences of each error/warning code and print a report:
