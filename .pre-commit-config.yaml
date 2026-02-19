@@ -178,39 +178,15 @@ repos:
   rev: 7.3.0
   hooks:
   - id: flake8
-    alias: flake8-no-wps
-    name: flake8 WPS-excluded
     additional_dependencies:
     - flake8-2020 ~= 1.7.0
     - flake8-length ~= 0.3.0
     - flake8-logging-format ~= 0.7.5
     - flake8-pytest-style ~= 1.6.0
-    exclude: >-
-      ^docs/_samples/.*\.py$
-    language_version: python3
-    types_or:
-    - cython
-    - python
-    - pyi
-    - jupyter
-
-- repo: https://github.com/PyCQA/flake8.git
-  rev: 7.3.0
-  hooks:
-  - id: flake8
-    alias: flake8-only-wps
-    name: flake8 WPS-only
-    args:
-    # https://wemake-python-stylegui.de/en/latest/pages/usage/formatter.html
-    - --format
-    - wemake
-    - --select
-    - WPS
-    additional_dependencies:
     - wemake-python-styleguide ~= 1.4.0
     exclude: >-
       ^docs/_samples/.*\.py$
-    language_version: python3.11  # flake8-commas doesn't work w/ Python 3.12
+    language_version: python3
     types_or:
     - cython
     - python
