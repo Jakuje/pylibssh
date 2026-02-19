@@ -174,8 +174,11 @@ repos:
     additional_dependencies:
     - flake8-2020 ~= 1.7.0
     - flake8-annotations ~= 3.2.0
+    - flake8-comprehensions ~= 3.17.0
+    - flake8-cognitive-complexity ~= 0.1.0
     - flake8-docstrings ~= 1.7.0
     - flake8-length ~= 0.3.1
+    - flake8-logging ~= 1.8.0
     # NOTE: `flake8-logging-format` hasn't had updates since 2024 and
     # NOTE: thus gained an unresolved incompatibility with Python 3.14.
     - flake8-logging-format ~= 2024.24.12; python_version < "3.14"
