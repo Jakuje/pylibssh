@@ -112,13 +112,6 @@ repos:
     exclude: >-
       ^docs/_samples/.*\.py$
 
-- repo: https://github.com/PyCQA/pydocstyle.git
-  rev: 6.3.0
-  hooks:
-  - id: pydocstyle
-    exclude: >-
-      ^docs/_samples/.*\.py$
-
 - repo: https://github.com/codespell-project/codespell.git
   rev: v2.4.1
   hooks:
@@ -181,6 +174,7 @@ repos:
     additional_dependencies:
     - flake8-2020 ~= 1.7.0
     - flake8-annotations ~= 3.2.0
+    - flake8-docstrings ~= 1.7.0
     - flake8-length ~= 0.3.1
     # NOTE: `flake8-logging-format` hasn't had updates since 2024 and
     # NOTE: thus gained an unresolved incompatibility with Python 3.14.
