@@ -41,6 +41,7 @@ OPTS_MAP = {
     "gssapi_server_identity": libssh.SSH_OPTIONS_GSSAPI_SERVER_IDENTITY,
     "gssapi_client_identity": libssh.SSH_OPTIONS_GSSAPI_CLIENT_IDENTITY,
     "gssapi_delegate_credentials": libssh.SSH_OPTIONS_GSSAPI_DELEGATE_CREDENTIALS,
+    "log_verbosity": libssh.SSH_OPTIONS_LOG_VERBOSITY,
 }
 OPTS_DIR_MAP = {
     "ssh_dir": libssh.SSH_OPTIONS_SSH_DIR,
@@ -165,7 +166,7 @@ cdef class Session(object):
             key_m = OPTS_MAP[key]
         else:
             raise LibsshSessionException("Unknown attribute name [%s]" % key)
-        if key in ("fd", "gssapi_delegate_credentials"):
+        if key in ("fd", "gssapi_delegate_credentials", "log_verbosity"):
             value_int = value
             libssh.ssh_options_set(self._libssh_session, key_m, &value_int)
         elif key == "port":
@@ -248,6 +249,13 @@ cdef class Session(object):
         :param proxycommand: The proxycommand use to setup a ssh connection using
         jumphost
         :type proxycommand: str
+
+        :param log_verbosity: The log level to set filtering on source. Possible values are
+                              :data:`ANSIBLE_PYLIBSSH_TRACE`, :data:`logging.DEBUG`,
+                              :data:`logging.INFO`, :data:`logging.WARNING`,
+                              :data:`logging.ERROR`, :data:`logging.FATAL`,
+                              :data:`ANSIBLE_PYLIBSSH_NOLOG`.
+        :type log_verbosity: int
         """
         cdef LibsshSessionException saved_exception = None
 
