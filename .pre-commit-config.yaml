@@ -1,7 +1,7 @@
 ---
 
 ci:
-  autoupdate_schedule: quarterly
+  autoupdate_schedule: quarterly  # low frequency to reduce maintenance noise
 
 repos:
 - repo: https://github.com/Kludex/no-optional.git
@@ -130,8 +130,9 @@ repos:
   rev: v1.37.1
   hooks:
   - id: yamllint
-    files: \.(yaml|yml)$
-    types: [file, yaml]
+    types:
+    - file
+    - yaml
     args:
     - --strict
 
