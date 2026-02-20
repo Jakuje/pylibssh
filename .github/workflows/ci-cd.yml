@@ -909,10 +909,9 @@ jobs:
     strategy:
       matrix:
         target-container:
-        - tag: fedora:39
-        - tag: fedora:40
-        - tag: fedora:41
         - tag: fedora:42
+        - tag: fedora:43
+        - tag: fedora:44
         - tag: ubi9/ubi:9.0.0
           registry: registry.access.redhat.com
         - tag: ubi9/ubi:9.1
@@ -922,6 +921,12 @@ jobs:
         - tag: ubi9/ubi:9.3
           registry: registry.access.redhat.com
         - tag: ubi9/ubi:9.4
+          registry: registry.access.redhat.com
+        - tag: ubi9/ubi:9.5
+          registry: registry.access.redhat.com
+        - tag: ubi9/ubi:9.6
+          registry: registry.access.redhat.com
+        - tag: ubi9/ubi:9.7
           registry: registry.access.redhat.com
 
     runs-on: ubuntu-latest
