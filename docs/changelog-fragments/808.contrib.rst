@@ -1,0 +1,8 @@
+The CI/CD/packaging infrastructure has been updated to produce
+:external+packaging:term:`source distribution <Source Distribution (or "sdist")>`
+file names consistent with the requirement of uploading artifacts
+compliant with the core packaging metadata 2.2 or newer to PyPI and
+TestPyPI -- by :user:`webknjaz`.
+
+Along with that, the infrastructure has been adjusted to expect
+:pep:`625`-conforming names in its guard rails checks.
