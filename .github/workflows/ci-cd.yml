@@ -76,7 +76,6 @@ env:
   PIP_DISABLE_PIP_VERSION_CHECK: 1  # Hide "there's a newer pip" message
   PIP_NO_PYTHON_VERSION_WARNING: 1  # Hide "this Python is deprecated" message
   PIP_NO_WARN_SCRIPT_LOCATION: 1  # Hide "script dir is not in $PATH" message
-  PROJECT_NAME: ansible-pylibssh
   PY_COLORS: 1  # Recognized by the `py` package, dependency of `pytest`
   TOX_PARALLEL_NO_SPINNER: 1  # Disable tox's parallel run spinner animation
   TOX_TESTENV_PASSENV: >-  # Make tox-wrapped tools see color requests
@@ -130,13 +129,10 @@ jobs:
       # NOTE: inaccessible when passing inputs to reusable workflows.
       dists-artifact-name: python-package-distributions
       dist-version: >-
-        ${{
-            steps.request-check.outputs.release-requested == 'true'
-            && github.event.inputs.release-version
-            || steps.scm-version.outputs.dist-version
-        }}
+        ${{ steps.normalize-dist-version.outputs.dist-version }}
       is-untagged-devel: >-
         ${{ steps.untagged-check.outputs.is-untagged-devel || false }}
+      project-name: ${{ steps.metadata.outputs.project-name }}
       release-requested: >-
         ${{
             steps.request-check.outputs.release-requested || false
@@ -153,7 +149,8 @@ jobs:
         ${{ steps.profiling-check.outputs.profiling-enabled || false }}
       cache-key-for-dep-files: >-
         ${{ steps.calc-cache-key-files.outputs.cache-key-for-dep-files }}
-      git-tag: ${{ steps.git-tag.outputs.tag }}
+      git-tag: >-
+        v${{ steps.normalize-dist-version.outputs.dist-version }}
       sdist-artifact-name: ${{ steps.artifact-name.outputs.sdist }}
       wheel-artifact-name: ${{ steps.artifact-name.outputs.wheel }}
       changelog-patch-name: ${{ steps.changelog-patch-name.outputs.filename }}
@@ -213,8 +210,6 @@ jobs:
         ) as outputs_file:
             print('profiling-enabled=true', file=outputs_file)
     - name: Check out src from Git
-      if: >-
-        steps.request-check.outputs.release-requested != 'true'
       uses: actions/checkout@v4
       with:
         fetch-depth: >-
@@ -222,7 +217,27 @@ jobs:
             steps.request-check.outputs.release-requested == 'true'
             && 1 || 0
           }}
-        ref: ${{ github.event.inputs.release-committish }}
+        ref: ${{ inputs.release-committish }}
+    - name: Scan static PEP 621 core packaging metadata
+      id: metadata
+      run: |
+        from configparser import ConfigParser
+        from os import environ
+        from pathlib import Path
+
+        FILE_APPEND_MODE = 'a'
+
+        setup_cfg_txt = Path('setup.cfg').read_text()
+
+        setup_cfg_parser = ConfigParser()
+        setup_cfg_parser.read_string(setup_cfg_txt)
+
+        project_name = setup_cfg_parser.get('metadata', 'name')
+
+        with Path(environ['GITHUB_OUTPUT']).open(
+                mode=FILE_APPEND_MODE,
+        ) as outputs_file:
+            print(f'project-name={project_name}', file=outputs_file)
     - name: >-
         Calculate dependency files' combined hash value
         for use in the cache key
@@ -280,34 +295,33 @@ jobs:
                 f'dist-version-for-filenames={ver.replace("+", "-")}',
                 file=outputs_file,
             )
-    - name: Set the target Git tag
-      id: git-tag
+    - name: Normalize dist version
+      id: normalize-dist-version
       run: |
         from os import environ
         from pathlib import Path
 
         FILE_APPEND_MODE = 'a'
 
+        dist_version = "${{
+            steps.request-check.outputs.release-requested == 'true'
+            && inputs.release-version
+            || steps.scm-version.outputs.dist-version
+        }}".lstrip("v")
+
         with Path(environ['GITHUB_OUTPUT']).open(
                 mode=FILE_APPEND_MODE,
         ) as outputs_file:
             print(
-                "tag=v${{
-                    steps.request-check.outputs.release-requested == 'true'
-                    && github.event.inputs.release-version
-                    || steps.scm-version.outputs.dist-version
-                }}",
+                f"dist-version={dist_version}",
                 file=outputs_file,
             )
     - name: Set the expected dist artifact names
       id: artifact-name
       env:
+        PROJECT_NAME: ${{ steps.metadata.outputs.project-name }}
         PROJECT_VERSION: >-
-          ${{
-            steps.request-check.outputs.release-requested == 'true'
-            && github.event.inputs.release-version
-            || steps.scm-version.outputs.dist-version
-          }}
+          ${{ steps.normalize-dist-version.outputs.dist-version }}
       run: |
         from os import environ
         from pathlib import Path
@@ -493,6 +507,8 @@ jobs:
         tee
         '${{ needs.pre-setup.outputs.changelog-draft-name-rst }}'
     - name: Sanitize the markdown changelog version
+      env:
+        PROJECT_NAME: ${{ needs.pre-setup.outputs.project-name }}
       run: >-
         sed
         -i
@@ -958,6 +974,9 @@ jobs:
       run:
         shell: bash -eEuxo pipefail {0}
 
+    env:
+      PROJECT_NAME: ${{ needs.pre-setup.outputs.project-name }}
+
     steps:
     - name: Produce artifact name
       id: distribution-meta
@@ -1152,6 +1171,8 @@ jobs:
 
     uses: ./.github/workflows/reusable-tests.yml
     with:
+      project-name: >-
+        ${{ needs.pre-setup.outputs.project-name }}
       python-version: ${{ matrix.python-version }}
       runner-vm-os: ${{ matrix.runner-vm-os }}
       dist-type: ${{ matrix.dist-type }}
@@ -1187,6 +1208,8 @@ jobs:
 
     uses: ./.github/workflows/reusable-tests.yml
     with:
+      project-name: >-
+        ${{ needs.pre-setup.outputs.project-name }}
       python-version: ${{ matrix.python-version }}
       runner-vm-os: ${{ matrix.runner-vm-os }}
       dist-type: ${{ matrix.dist-type }}
@@ -1308,7 +1331,9 @@ jobs:
     environment:
       name: pypi
       url: >-
-        https://pypi.org/project/${{ env.PROJECT_NAME }}/${{
+        https://pypi.org/project/${{
+          needs.pre-setup.outputs.project-name
+        }}/${{
           needs.pre-setup.outputs.dist-version
         }}
 
@@ -1359,7 +1384,9 @@ jobs:
     environment:
       name: testpypi
       url: >-
-        https://test.pypi.org/project/${{ env.PROJECT_NAME }}/${{
+        https://test.pypi.org/project/${{
+          needs.pre-setup.outputs.project-name
+        }}/${{
           needs.pre-setup.outputs.dist-version
         }}
 
@@ -1487,6 +1514,8 @@ jobs:
         Tag the release in the local Git repo
         as ${{ needs.pre-setup.outputs.git-tag }}
       if: steps.existing-remote-tag-check.outputs.already-exists != 'true'
+      env:
+        PROJECT_NAME: ${{ needs.pre-setup.outputs.project-name }}
       run: >-
         git tag
         -m '${{ needs.pre-setup.outputs.git-tag }}'
@@ -1606,6 +1635,8 @@ jobs:
             )
       shell: python
     - name: Prepare the release notes file for the GitHub Releases
+      env:
+        PROJECT_NAME: ${{ needs.pre-setup.outputs.project-name }}
       run: |
         echo '## 📝 Release notes' | tee -a release-notes.md
         echo | tee -a release-notes.md
@@ -1703,7 +1734,7 @@ jobs:
         ${{
           steps.deployment.outputs.page_url
         }}/simple/${{
-          env.PROJECT_NAME
+          needs.pre-setup.outputs.project-name
         }}/
 
     permissions:
@@ -1716,6 +1747,8 @@ jobs:
 
     steps:
     - name: Download the recent published versions from TestPyPI
+      env:
+        PROJECT_NAME: ${{ needs.pre-setup.outputs.project-name }}
       run: >-
         python -m
         pip download
