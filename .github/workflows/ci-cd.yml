@@ -244,7 +244,7 @@ jobs:
         git tag --points-at HEAD
         |
         xargs git tag --delete
-      shell: bash
+      shell: bash -eEuxo pipefail {0}
     - name: Set up versioning prerequisites
       if: >-
         steps.request-check.outputs.release-requested != 'true'
@@ -254,7 +254,7 @@ jobs:
         --user
         setuptools-scm
         --constraint=requirements-build.txt
-      shell: bash
+      shell: bash -eEuxo pipefail {0}
     - name: Set the current dist version from Git
       if: steps.request-check.outputs.release-requested != 'true'
       id: scm-version
@@ -394,6 +394,10 @@ jobs:
 
     timeout-minutes: 2  # network is slow sometimes
 
+    defaults:
+      run:
+        shell: bash -eEuxo pipefail {0}
+
     env:
       TOXENV: make-changelog
 
@@ -466,7 +470,6 @@ jobs:
         git tag --points-at HEAD
         |
         xargs git tag --delete
-      shell: bash
 
     - name: Setup git user as [bot]
       # Refs:
@@ -488,7 +491,6 @@ jobs:
         |
         tee
         '${{ needs.pre-setup.outputs.changelog-draft-name-rst }}'
-      shell: bash
     - name: Sanitize the markdown changelog version
       run: >-
         sed
@@ -501,7 +503,6 @@ jobs:
         -e 's/:user:`\([-.a-zA-Z0-9]\+\)`/@\1/g'
         -e 's/|project|/${{ env.PROJECT_NAME }}/g'
         '${{ needs.pre-setup.outputs.changelog-draft-name-rst }}'
-      shell: bash
     - name: Install pandoc via apt
       run: sudo apt install -y pandoc
     - name: >-
@@ -524,7 +525,6 @@ jobs:
         cat '${{
             needs.pre-setup.outputs.changelog-draft-name-md
         }}' >> "${GITHUB_STEP_SUMMARY}"
-      shell: bash
     - name: Generate changelog update with tox and stage it in Git
       run: >-
         python -m
@@ -745,6 +745,10 @@ jobs:
 
     timeout-minutes: 2
 
+    defaults:
+      run:
+        shell: bash -eEuxo pipefail {0}
+
     strategy:
       matrix:
         python-version:
@@ -786,15 +790,12 @@ jobs:
         name: changelog
     - name: Apply the changelog patch but do not commit it
       run: git apply '${{ needs.pre-setup.outputs.changelog-patch-name }}'
-      shell: bash
     - name: Delete the changelog patch file
       run: rm -fv '${{ needs.pre-setup.outputs.changelog-patch-name }}'
-      shell: bash
     - name: Pretend that changelog updates never happened
       run: |
         git diff --color=always
         git update-index --assume-unchanged $(git ls-files --modified)
-      shell: bash
 
     - name: Set up pip cache
       uses: re-actors/cache-python-deps@release/v1
@@ -824,7 +825,6 @@ jobs:
         git tag --points-at HEAD
         |
         xargs git tag --delete
-      shell: bash
 
     - name: Setup git user as [bot]
       if: >-
@@ -952,6 +952,10 @@ jobs:
         }}${{
           matrix.target-container.tag
         }}
+
+    defaults:
+      run:
+        shell: bash -eEuxo pipefail {0}
 
     steps:
     - name: Produce artifact name
@@ -1210,6 +1214,10 @@ jobs:
 
     timeout-minutes: 1
 
+    defaults:
+      run:
+        shell: bash -eEuxo pipefail {0}
+
     env:
       TOXENV: metadata-validation
 
@@ -1263,6 +1271,10 @@ jobs:
 
     timeout-minutes: 1
 
+    defaults:
+      run:
+        shell: bash -eEuxo pipefail {0}
+
     steps:
     - name: Decide whether the needed jobs succeeded or failed
       uses: re-actors/alls-green@release/v1
@@ -1289,6 +1301,10 @@ jobs:
     runs-on: ubuntu-latest
 
     timeout-minutes: 5  # docker+network are slow sometimes
+
+    defaults:
+      run:
+        shell: bash -eEuxo pipefail {0}
 
     environment:
       name: pypi
@@ -1337,6 +1353,10 @@ jobs:
 
     timeout-minutes: 5  # docker+network are slow sometimes
 
+    defaults:
+      run:
+        shell: bash -eEuxo pipefail {0}
+
     environment:
       name: testpypi
       url: >-
@@ -1380,6 +1400,10 @@ jobs:
     runs-on: ubuntu-latest
 
     timeout-minutes: 1
+
+    defaults:
+      run:
+        shell: bash -eEuxo pipefail {0}
 
     outputs:
       pull_request_url: ${{ steps.pr.outputs.pull_request_url }}
@@ -1449,7 +1473,6 @@ jobs:
     - name: Apply the changelog patch
       if: steps.existing-remote-tag-check.outputs.already-exists != 'true'
       run: git am '${{ needs.pre-setup.outputs.changelog-patch-name }}'
-      shell: bash
 
     - name: >-
         Create a local 'release/${{
@@ -1539,6 +1562,10 @@ jobs:
 
     timeout-minutes: 3
 
+    defaults:
+      run:
+        shell: bash -eEuxo pipefail {0}
+
     permissions:
       contents: write
       discussions: write
@@ -1619,7 +1646,6 @@ jobs:
         cat '${{
             needs.pre-setup.outputs.changelog-draft-name-md
         }}' | tee -a release-notes.md
-      shell: bash
 
     - name: Sign the dists with Sigstore
       uses: sigstore/gh-action-sigstore-python@v3.0.0
@@ -1671,6 +1697,10 @@ jobs:
     runs-on: ubuntu-latest
 
     timeout-minutes: 5
+
+    defaults:
+      run:
+        shell: bash -eEuxo pipefail {0}
 
     environment:
       name: github-pages
@@ -1725,7 +1755,6 @@ jobs:
             github.repository_owner
           }}.github.io/${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}/dist" \
           --output-dir gh-pages-dumb-pypi
-      shell: bash
 
     - name: >-
         Copy dists from this build and TestPyPI

@@ -73,6 +73,10 @@ jobs:
 
     timeout-minutes: 7
 
+    defaults:
+      run:
+        shell: bash -eEuxo pipefail {0}
+
     continue-on-error: >-
       ${{
           (
@@ -209,7 +213,6 @@ jobs:
         | jq --raw-output .install[].download_info.url
         | sed -e 's#^file://##' -e 's#%2B#+#'
         | tee -a "${GITHUB_OUTPUT}"
-      shell: bash
 
     - name: >-
         Pre-populate tox env:
@@ -262,7 +265,6 @@ jobs:
         --
         --no-cov -vvvvv --lf
         && exit 1
-      shell: bash
     - name: Send coverage data to Codecov
       uses: codecov/codecov-action@v5.1.2
       with:

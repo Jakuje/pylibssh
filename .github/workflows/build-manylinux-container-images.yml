@@ -69,6 +69,7 @@ jobs:
 
     defaults:
       run:
+        shell: bash -eEuxo pipefail {0}
         working-directory: build-scripts/manylinux-container-image/
 
     name: >-  # can't use `env` in this context:
