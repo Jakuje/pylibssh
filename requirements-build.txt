@@ -12,7 +12,7 @@ packaging==26.0
     # via setuptools-scm
 pyparsing==3.3.2
     # via packaging
-setuptools-scm==9.2.2
+setuptools-scm==8.3.1
     # via -r -
 tomli==2.4.0
     # via setuptools-scm
