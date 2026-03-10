@@ -1,0 +1,3 @@
+The pre-cached ``armv7l`` images we build for the packaging
+infrastructure are now correctly tagged with the ``linux/arm/v7``
+OCI platform tag -- by :user:`webknjaz`.
