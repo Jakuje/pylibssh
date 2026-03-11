@@ -43,7 +43,7 @@ jobs:
       TOXENV: ${{ matrix.toxenv }}
 
     steps:
-    - uses: actions/checkout@v4.1.6
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5.3.0
       with:
