@@ -5,4 +5,5 @@ compliant with the core packaging metadata 2.2 or newer to PyPI and
 TestPyPI -- by :user:`webknjaz`.
 
 Along with that, the infrastructure has been adjusted to expect
-:pep:`625`-conforming names in its guard rails checks.
+:pep:`625`-conforming names in its guard rails checks
+-- with some :user:`cidrblock`\ s help.
