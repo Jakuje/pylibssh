@@ -1,0 +1,6 @@
+The CI/CD infrastructure has been set up to avoid parts of the template
+injection problem in GitHub Actions workflow definitions. The shell
+entry point has been set to bash for any scripts with extra strictness
+enabled.
+
+-- by :user:`webknjaz`
