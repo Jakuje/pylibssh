@@ -5,6 +5,9 @@ name: ♲ 🧪
 on:  # yamllint disable-line rule:truthy
   workflow_call:
     inputs:
+      project-name:
+        required: true
+        type: string
       python-version:
         required: true
         type: string
@@ -50,7 +53,6 @@ env:
   PIP_DISABLE_PIP_VERSION_CHECK: 1
   PIP_NO_PYTHON_VERSION_WARNING: 1
   PIP_NO_WARN_SCRIPT_LOCATION: 1
-  PROJECT_NAME: ansible-pylibssh
   PY_COLORS: 1  # Recognized by the `py` package, dependency of `pytest`
   TOX_PARALLEL_NO_SPINNER: 1
   TOX_TESTENV_PASSENV: >-  # Make tox-wrapped tools see color requests
@@ -187,6 +189,7 @@ jobs:
         # NOTE: in the Bash script.
         # NOTE: Ref: https://github.com/Textualize/rich/issues/2622
         NO_COLOR: 1
+        PROJECT_NAME: ${{ inputs.project-name }}
       if: inputs.dist-type == 'binary'
       id: wheel-file
       run: >
