@@ -1,0 +1,2 @@
+The CI/CD and packaging infrastructure now sources the PyPI project name
+from :file:`setup.cfg` rather than hardcoding it -- by :user:`webknjaz`.
