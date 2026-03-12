@@ -164,7 +164,7 @@ jobs:
         python -m
         pip install
         --user
-        '${{ env.TOX_VERSION }}'
+        "${TOX_VERSION}"
 
     - name: Download all the dists
       uses: actions/download-artifact@v4
@@ -202,7 +202,7 @@ jobs:
         -m pip install
         --find-links=./dist
         --no-index
-        '${{ env.PROJECT_NAME }}'
+        "${PROJECT_NAME}"
         --force-reinstall
         --no-color
         --no-deps

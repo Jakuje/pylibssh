@@ -58,7 +58,7 @@ jobs:
         python -m
         pip install
         --user
-        '${{ env.TOX_VERSION }}'
+        "${TOX_VERSION}"
     - name: Log installed dists
       run: python -m pip freeze --all
     - name: Initialize tox envs
