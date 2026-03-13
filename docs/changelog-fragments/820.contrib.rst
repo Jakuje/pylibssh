@@ -1,0 +1,2 @@
+:pypi:`cibuildwheel` has been upgraded to the latest version 2 stream
+release 2.23.3 -- by :user:`webknjaz`.
