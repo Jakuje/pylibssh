@@ -611,6 +611,7 @@ jobs:
         ${{ needs.pre-setup.outputs.dists-artifact-name }}
       # CIBW_CONFIG_SETTINGS: `with-cython-tracing` — for coverage collection
       # CIBW_ARCHS_MACOS=all x86_64 arm64 universal2
+      # FIXME: Add support for free-threading / see issue #822
       environment-variables: |-
         CIBW_ARCHS_MACOS=native
 
@@ -630,6 +631,7 @@ jobs:
           *-musllinux_*
           *-win32
           *_arm64
+          *t-*
         EOF'
           || ''
         }}
@@ -662,6 +664,7 @@ jobs:
         ${{ needs.pre-setup.outputs.dists-artifact-name }}
       # CIBW_CONFIG_SETTINGS: `with-cython-tracing` — for coverage collection
       # CIBW_ARCHS_MACOS=all x86_64 arm64 universal2
+      # FIXME: Add support for free-threading / see issue #822
       environment-variables: |-
         CIBW_ARCHS_MACOS=native
 
@@ -679,6 +682,7 @@ jobs:
           *_i686
           *-musllinux_*
           *-*linux_{aarch64,ppc64le,s390x}
+          *t-*
         EOF'
           || ''
         }}
@@ -713,6 +717,7 @@ jobs:
       # CIBW_ARCHS_LINUX: Build emulated architectures if QEMU, else "auto"
       # CIBW_CONFIG_SETTINGS: `with-cython-tracing` — for coverage collection
       # CIBW_ARCHS_MACOS=all x86_64 arm64 universal2
+      # FIXME: Add support for free-threading / see issue #822
       environment-variables: |-
         CIBW_ARCHS_LINUX=all
 
@@ -732,6 +737,7 @@ jobs:
           *_i686
           *-musllinux_*
           *-*linux_x86_64
+          *t-*
         EOF'
           || ''
         }}

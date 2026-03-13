@@ -204,6 +204,9 @@ build-frontend = "build"
 # container-engine = "podman"  # FIXME?
 test-requires = "pytest pytest-cov pytest-xdist"
 test-command = "python -Im pytest -m smoke --no-cov {project}/tests"
+skip = [
+  "*t-*",  # FIXME: Add support for free-threading / see issue #822
+]
 
 [tool.cibuildwheel.environment]
 COLOR = "yes"
@@ -230,6 +233,8 @@ skip = [
   # The support for 32-bit wheels has been dropped long ago:
   "*-manylinux_i686",
   "*-musllinux_i686",
+
+  "*t-*",  # FIXME: Add support for free-threading / see issue #822
 ]
 
 [tool.cibuildwheel.linux.environment]
