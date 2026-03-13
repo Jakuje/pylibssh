@@ -729,8 +729,7 @@ Packaging updates and notes for downstreams
 
 - The ``setuptools-scm`` build dependency CI pin was updated to 8.1.0 —
   this version fixes a date parsing incompatibility introduced by Git 2.45.0
-  (:gh:`pypa/setuptools_scm#1038 <pypa/setuptools_scm/issues/1038>`,
-  :gh:`pypa/setuptools_scm#1039 <pypa/setuptools_scm/pull/1039>`)
+  (:issue:`pypa/setuptools_scm#1038`, :pr:`pypa/setuptools_scm#1039`)
   -- by :user:`webknjaz`.
 
   *Related issues and pull requests on GitHub:*
@@ -833,8 +832,7 @@ Contributor-facing changes
 
 - The ``setuptools-scm`` build dependency CI pin was updated to 8.1.0 —
   this version fixes a date parsing incompatibility introduced by Git 2.45.0
-  (:gh:`pypa/setuptools_scm#1039 <pypa/setuptools_scm/issues/1038>`,
-  :gh:`pypa/setuptools_scm#1038 <pypa/setuptools_scm/pull/1039>`)
+  (:issue:`pypa/setuptools_scm#1038`, :pr:`pypa/setuptools_scm#1039`)
   -- by :user:`webknjaz`.
 
   *Related issues and pull requests on GitHub:*
