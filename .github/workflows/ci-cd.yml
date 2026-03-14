@@ -717,6 +717,7 @@ jobs:
       # CIBW_ARCHS_LINUX: Build emulated architectures if QEMU, else "auto"
       # CIBW_CONFIG_SETTINGS: `with-cython-tracing` — for coverage collection
       # CIBW_ARCHS_MACOS=all x86_64 arm64 universal2
+      # FIXME: RISC-V requires us to provide a build container
       # FIXME: Add support for free-threading / see issue #822
       environment-variables: |-
         CIBW_ARCHS_LINUX=all
@@ -736,6 +737,7 @@ jobs:
           && 'CIBW_SKIP<<EOF
           *_i686
           *-musllinux_*
+          *-*_riscv64
           *-*linux_x86_64
           *t-*
         EOF'

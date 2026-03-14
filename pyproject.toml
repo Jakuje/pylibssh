@@ -234,6 +234,8 @@ skip = [
   "*-manylinux_i686",
   "*-musllinux_i686",
 
+  "*-*_riscv64",  # FIXME: RISC-V requires us to provide a build container
+
   "*t-*",  # FIXME: Add support for free-threading / see issue #822
 ]
 
