@@ -708,7 +708,7 @@ jobs:
     uses: ./.github/workflows/reusable-cibuildwheel.yml
     with:
       runner-vm-os: ubuntu-latest
-      timeout-minutes: 70
+      timeout-minutes: 80
       source-tarball-name: >-
         ${{ needs.pre-setup.outputs.sdist-artifact-name }}
       dists-artifact-name: >-
