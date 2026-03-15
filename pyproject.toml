@@ -280,6 +280,13 @@ before-build = [
   #   working_directory: libssh/build
 ]
 
+[tool.cibuildwheel.macos.environment]
+# delocate (bundled with cibuildwheel v3) enforces that the wheel's
+# deployment target matches the bundled dylibs. The brew-installed
+# openssl@3 bottle on macos-15-intel targets macOS 15.0.
+# FIXME: eventually, we may want to lower the target: see PR #795 and others
+MACOSX_DEPLOYMENT_TARGET = "15.0"
+
 [tool.cibuildwheel.windows]
 skip = "*"
 
