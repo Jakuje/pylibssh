@@ -1,0 +1,6 @@
+While upgrading :pypi:`cibuildwheel` to v3.1.4, its defaults changed to
+attempt building wheels for the RISC-V architecture. This target is now
+disabled explicitly due to the lack of infrastructure
+-- by :user:`webknjaz`.
+
+We may enable it at a later time as a separate dedicated effort.
