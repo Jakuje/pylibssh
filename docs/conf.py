@@ -138,6 +138,7 @@ master_doc = 'index'
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
+    'coveragepy': ('https://coverage.readthedocs.io/en/latest', None),
     'cython': ('https://cython.readthedocs.io/en/latest', None),
     'packaging': ('https://packaging.python.org', None),
     'pip': ('https://pip.pypa.io/en/latest', None),

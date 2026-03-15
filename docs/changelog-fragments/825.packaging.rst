@@ -1,0 +1,3 @@
+The core packaging metadata now reflects that we test the project under
+Python 3.13 and 3.14 (with GIL enabled)
+-- by :user:`cidrblock` and :user:`webknjaz`.
