@@ -8,17 +8,17 @@ cython==3.2.4
     # via -r -
 expandvars==1.1.2
     # via -r -
-packaging==26.0
+packaging==25.0
     # via setuptools-scm
 pyparsing==3.3.2
     # via packaging
 setuptools-scm==8.3.1
     # via -r -
-tomli==2.4.0
+tomli==2.2.1
     # via setuptools-scm
-typing-extensions==4.15.0
+typing-extensions==4.14.1
     # via setuptools-scm
-wheel==0.46.3
+wheel==0.45.1
     # via -r -
 
 # The following packages are considered to be unsafe in a requirements file:
