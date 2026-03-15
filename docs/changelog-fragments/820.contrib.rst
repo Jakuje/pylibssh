@@ -1,1 +1,0 @@
-:pypi:`cibuildwheel` has been upgraded to v3.1.4 -- by :user:`webknjaz`.

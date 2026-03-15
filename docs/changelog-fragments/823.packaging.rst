@@ -1,4 +1,0 @@
-Upgrading :pypi:`cibuildwheel` to v3.1.0 also picked up Python 3.14
-and enabled respective wheels to be built -- by :user:`webknjaz`.
-
-Building the free-threaded wheels remains disabled, though.

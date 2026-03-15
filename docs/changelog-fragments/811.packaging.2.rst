@@ -1,5 +1,0 @@
-The build backend has been configured to exclude
-:file:`.git_archival.txt` from source distributions built from Git
--- by :user:`webknjaz`.
-
-This reduces the number of false positive warning the backend outputs.

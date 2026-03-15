@@ -1,4 +1,0 @@
-The build backend configuration no longer sets the deprecated
-``bdist_wheel.universal`` setting -- by :user:`webknjaz`.
-
-This does not influence the packaging artifacts in any way.

@@ -1,3 +1,0 @@
-The coverage measurement infrastructure now uses the ``ctrace``
-:external+coveragepy:std:ref:`measurement core <config_run_core>`
-across all the Python versions consistently -- by :user:`webknjaz`.

@@ -1,2 +1,0 @@
-Upgrading :pypi:`cibuildwheel` to v2.22.0 also picked up Python 3.13
-and enabled respective wheels to be built -- by :user:`webknjaz`.

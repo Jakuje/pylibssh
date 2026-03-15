@@ -1,6 +1,0 @@
-Due to :pypi:`cibuildwheel` to v3 bundling :pypi:`delocate` 0.13.0 that
-enforces deployment-target consistency with the brew-installed copy of
-the ``libssh`` in the build jobs, the macOS wheels we build now require
-macOS version 15.0 or newer.
-
--- by :user:`cidrblock` and :user:`webknjaz`

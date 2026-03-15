@@ -1,2 +1,0 @@
-The documentation building infrastructure now integrates GitHub-related
-RST roles using the :pypi:`sphinx-issues` extension -- by :user:`webknjaz`.
