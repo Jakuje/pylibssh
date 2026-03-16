@@ -1,2 +1,0 @@
-The CI now tests wheels built for Python 3.13 and 3.14
--- by :user:`cidrblock` and :user:`webknjaz`.

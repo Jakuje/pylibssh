@@ -1,2 +1,0 @@
-``cibuildwheel`` started making use of the ``armv7l`` container image
-following its upgrade to v2.22.0 -- by :user:`webknjaz`.
