@@ -954,6 +954,8 @@ jobs:
           registry: registry.access.redhat.com
         - tag: ubi9/ubi:9.7
           registry: registry.access.redhat.com
+        - tag: centos/centos:stream9
+          registry: quay.io
         - tag: centos/centos:stream10
           registry: quay.io
 
@@ -991,10 +993,20 @@ jobs:
         dist_tag=$(rpm --eval '%{?dist}')
         echo "dist-tag=${dist_tag}" >> "${GITHUB_OUTPUT}"
 
-    - name: Install epel and enable CRB repository for centos
+    - name: Enable CRB repository for centos
       if: contains(matrix.target-container.tag, 'centos')
       run: >-
-        dnf config-manager --set-enabled crb &&
+        dnf config-manager --set-enabled crb
+
+    - name: Install epel for centos 9
+      if: contains(matrix.target-container.tag, 'centos:stream9')
+      run: >-
+        dnf install -y
+        https://dl.fedoraproject.org/pub/epel/epel{,-next}-release-latest-9.noarch.rpm
+
+    - name: Install epel for centos 10
+      if: contains(matrix.target-container.tag, 'centos:stream10')
+      run: >-
         dnf install -y
         https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm
 
