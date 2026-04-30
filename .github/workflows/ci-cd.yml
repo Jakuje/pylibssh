@@ -210,7 +210,7 @@ jobs:
         ) as outputs_file:
             print('profiling-enabled=true', file=outputs_file)
     - name: Check out src from Git
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         fetch-depth: >-
           ${{
@@ -452,7 +452,7 @@ jobs:
         python-version: 3.11
 
     - name: Grab the source from Git
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         fetch-depth: 1  # Enough for this job to generate the changelog
         ref: ${{ github.event.inputs.release-committish }}
@@ -797,7 +797,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: Grab the source from Git
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         fetch-depth: >-
           ${{
@@ -1470,7 +1470,7 @@ jobs:
 
     steps:
     - name: Fetch the src snapshot  # IMPORTANT: Must be before the tag check
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         fetch-depth: 2
         ref: ${{ github.event.inputs.release-committish }}
