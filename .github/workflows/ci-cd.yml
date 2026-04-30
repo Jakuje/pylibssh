@@ -807,7 +807,7 @@ jobs:
         ref: ${{ github.event.inputs.release-committish }}
 
     - name: Fetch the GHA artifact with the version patch
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: changelog
     - name: Apply the changelog patch but do not commit it
@@ -1036,7 +1036,7 @@ jobs:
         packaging/rpm/"${PROJECT_NAME}".spec
 
     - name: Download all the dists  # because `rpmlint` executes the spec file
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         pattern: ${{ needs.pre-setup.outputs.dists-artifact-name }}*
         path: dist/
@@ -1300,7 +1300,7 @@ jobs:
     - name: Pre-populate tox env
       run: python -m tox -p auto --parallel-live -vvvv --notest
     - name: Download all the dists
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         pattern: ${{ needs.pre-setup.outputs.dists-artifact-name }}*
         path: dist/
@@ -1373,7 +1373,7 @@ jobs:
 
     steps:
     - name: Download all the dists
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         pattern: >-
           ${{ needs.pre-setup.outputs.dists-artifact-name }}*
@@ -1426,7 +1426,7 @@ jobs:
 
     steps:
     - name: Download all the dists
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         pattern: >-
           ${{ needs.pre-setup.outputs.dists-artifact-name }}*
@@ -1522,7 +1522,7 @@ jobs:
       uses: fregante/setup-git-user@v2
     - name: Fetch the GHA artifact with the version patch
       if: steps.existing-remote-tag-check.outputs.already-exists != 'true'
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: changelog
 
@@ -1629,13 +1629,13 @@ jobs:
 
     steps:
     - name: Download all the dists
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         pattern: ${{ needs.pre-setup.outputs.dists-artifact-name }}*
         path: dist/
         merge-multiple: true
     - name: Fetch the GHA artifact with the version patch
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: changelog
 
@@ -1788,7 +1788,7 @@ jobs:
         --pre
         "${PROJECT_NAME}"
     - name: Download all the dists
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         pattern: ${{ needs.pre-setup.outputs.dists-artifact-name }}*
         path: dist/
