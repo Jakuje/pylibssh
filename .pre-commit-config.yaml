@@ -10,7 +10,7 @@ repos:
   - id: no_optional
 
 - repo: https://github.com/astral-sh/ruff-pre-commit.git
-  rev: v0.15.9
+  rev: v0.15.20
   hooks:
   - id: ruff-check
     args:
@@ -20,7 +20,7 @@ repos:
     - --show-fixes
 
 - repo: https://github.com/astral-sh/ruff-pre-commit.git
-  rev: v0.15.9
+  rev: v0.15.20
   hooks:
   - id: ruff-format  # Cython imports are handled by `isort`
     alias: ruff-format-first-pass
@@ -32,14 +32,14 @@ repos:
   - id: add-trailing-comma
 
 - repo: https://github.com/astral-sh/ruff-pre-commit.git
-  rev: v0.15.9
+  rev: v0.15.20
   hooks:
   - id: ruff-format  # Cython imports are handled by `isort`
     alias: ruff-format-second-pass
     name: ruff-format (second pass)
 
 - repo: https://github.com/PyCQA/isort.git
-  rev: 8.0.1
+  rev: 9.0.0a3
   hooks:
   - id: isort
     args:
@@ -53,7 +53,7 @@ repos:
   - id: remove-tabs
 
 - repo: https://github.com/python-jsonschema/check-jsonschema.git
-  rev: 0.37.1
+  rev: 0.37.4
   hooks:
   - id: check-github-workflows
     files: ^\.github/workflows/[^/]+$
@@ -199,7 +199,7 @@ repos:
     - jupyter
 
 - repo: https://github.com/MarcoGorelli/cython-lint.git
-  rev: v0.19.0
+  rev: v0.21.0
   hooks:
   - id: cython-lint
     # NOTE: This linter does not have a config file so it's set up below.
