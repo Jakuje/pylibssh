@@ -24,8 +24,9 @@ actions:
   get-current-version:
   - >-
     bash -c "
-      python3 -m setuptools_scm  | sed 's/.*Guessed Version\s\+//g'
-    "
+      python3 -Im setuptools_scm \
+        | sed 's/.*Guessed Version\s\+//g' \
+        | sed -E 's/\+g([0-9a-f]{7})[0-9a-f]*/+g\1/'"
 
 # allowed_gpg_keys:
 # - 5DE3E0509C47EA3CF04A42D34AEE18F83AFDEB23  # GH web UI commit signing key
