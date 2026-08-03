@@ -571,7 +571,7 @@ jobs:
     - name: Verify that expected patch got created
       run: ls -1 '${{ needs.pre-setup.outputs.changelog-patch-name }}'
     - name: Save the package bump patch as a GHA artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: changelog
         path: |
@@ -916,7 +916,7 @@ jobs:
         'dist/${{ needs.pre-setup.outputs.sdist-artifact-name }}'
     - name: Store the source distribution package
       if: fromJSON(matrix.store-sdist-to-artifact)
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ needs.pre-setup.outputs.dists-artifact-name }}
         # NOTE: Exact expected file names are specified here
@@ -1172,7 +1172,7 @@ jobs:
         );
         echo "artifact-id=${normalized_container_id}" >> "${GITHUB_OUTPUT}"
     - name: Store RPM and SRPM as artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ steps.artifact-name.outputs.artifact-id }}--srpm-n-rpm
         path: |
