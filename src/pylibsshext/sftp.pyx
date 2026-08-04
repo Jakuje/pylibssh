@@ -67,11 +67,11 @@ cdef class SFTP:
             rf = sftp.sftp_open(self._libssh_sftp_session, remote_file_b, O_WRONLY | O_CREAT | O_TRUNC, sftp.S_IRWXU)
             if rf is NULL:
                 raise LibsshSFTPException("Opening remote file [%s] for write failed with error [%s]" % (remote_file, self._get_sftp_error_str()))
-            buffer = f.read(SFTP_MAX_CHUNK)
+            read_buffer = f.read(SFTP_MAX_CHUNK)
 
-            while buffer != b"":
-                length = len(buffer)
-                written = sftp.sftp_write(rf, PyBytes_AS_STRING(buffer), length)
+            while read_buffer != b"":
+                length = len(read_buffer)
+                written = sftp.sftp_write(rf, PyBytes_AS_STRING(read_buffer), length)
                 if written != length:
                     sftp.sftp_close(rf)
                     raise LibsshSFTPException(
@@ -80,7 +80,7 @@ cdef class SFTP:
                             self._get_sftp_error_str(),
                         )
                     )
-                buffer = f.read(SFTP_MAX_CHUNK)
+                read_buffer = f.read(SFTP_MAX_CHUNK)
             sftp.sftp_close(rf)
 
     def get(self, remote_file, local_file):
