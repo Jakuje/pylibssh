@@ -1,0 +1,2 @@
+Added docstrings for ``SFTP.get()`` and ``SFTP.put()``
+methods -- by :user:`Jakuje`.

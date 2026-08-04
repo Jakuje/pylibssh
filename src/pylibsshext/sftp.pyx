@@ -58,6 +58,15 @@ cdef class SFTP:
             self._libssh_sftp_session = NULL
 
     def put(self, local_file, remote_file):
+        """
+        Upload local file to remote server.
+
+        :param local_file: The file name on the local file system to upload
+        :type local_file: str or os.PathLike
+
+        :param remote_file: The path to upload the file on the remote system
+        :type remote_file: str or bytes
+        """
         cdef sftp.sftp_file rf
         with open(local_file, "rb") as f:
             remote_file_b = remote_file
@@ -84,6 +93,15 @@ cdef class SFTP:
             sftp.sftp_close(rf)
 
     def get(self, remote_file, local_file):
+        """
+        Download remote file to local path.
+
+        :param remote_file: The file path on the remote system to download
+        :type remote_file: str or bytes
+
+        :param local_file: The path on the local file system to place the downloaded file
+        :type local_file: str or os.PathLike
+        """
         cdef sftp.sftp_file rf
         cdef char *read_buffer = NULL
         cdef sftp.sftp_attributes attrs
