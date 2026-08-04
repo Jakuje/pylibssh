@@ -76,9 +76,20 @@ cdef class SFTP:
             if isinstance(remote_file_b, unicode):
                 remote_file_b = remote_file.encode("utf-8")
 
-            rf = sftp.sftp_open(self._libssh_sftp_session, remote_file_b, O_WRONLY | O_CREAT | O_TRUNC, sftp.S_IRWXU)
+            rf = sftp.sftp_open(
+                self._libssh_sftp_session,
+                remote_file_b,
+                O_WRONLY | O_CREAT | O_TRUNC,
+                sftp.S_IRWXU,
+            )
             if rf is NULL:
-                raise LibsshSFTPException("Opening remote file [%s] for write failed with error [%s]" % (remote_file, self._get_sftp_error_str()))
+                raise LibsshSFTPException(
+                    "Opening remote file [%s] for write failed with error [%s]"
+                    % (
+                        remote_file,
+                        self._get_sftp_error_str()
+                    ),
+                )
             read_buffer = f.read(SFTP_MAX_CHUNK)
 
             while read_buffer != b"":
@@ -87,7 +98,8 @@ cdef class SFTP:
                 if written != length:
                     sftp.sftp_close(rf)
                     raise LibsshSFTPException(
-                        "Writing to remote file [%s] failed with error [%s]" % (
+                        "Writing to remote file [%s] failed with error [%s]"
+                        % (
                             remote_file,
                             self._get_sftp_error_str(),
                         )
@@ -115,13 +127,24 @@ cdef class SFTP:
 
         attrs = sftp.sftp_stat(self._libssh_sftp_session, remote_file_b)
         if attrs is NULL:
-            raise LibsshSFTPException("Failed to stat the remote file [%s]. Error: [%s]"
-                                      % (remote_file, self._get_sftp_error_str()))
+            raise LibsshSFTPException(
+                "Failed to stat the remote file [%s]. Error: [%s]"
+                % (
+                    remote_file,
+                    self._get_sftp_error_str(),
+                ),
+            )
         file_size = attrs.size
 
         rf = sftp.sftp_open(self._libssh_sftp_session, remote_file_b, O_RDONLY, sftp.S_IRWXU)
         if rf is NULL:
-            raise LibsshSFTPException("Opening remote file [%s] for read failed with error [%s]" % (remote_file, self._get_sftp_error_str()))
+            raise LibsshSFTPException(
+                "Opening remote file [%s] for read failed with error [%s]"
+                % (
+                    remote_file,
+                    self._get_sftp_error_str(),
+                ),
+            )
 
         try:
             with open(local_file, 'wb') as f:
@@ -136,16 +159,29 @@ cdef class SFTP:
                         break
                     elif file_data < 0:
                         sftp.sftp_close(rf)
-                        raise LibsshSFTPException("Reading data from remote file [%s] failed with error [%s]"
-                                                  % (remote_file, self._get_sftp_error_str()))
+                        raise LibsshSFTPException(
+                            "Reading data from remote file [%s] failed with error [%s]"
+                            % (
+                                remote_file,
+                                self._get_sftp_error_str(),
+                            ),
+                        )
 
                     bytes_written = f.write(read_buffer[:file_data])
                     if bytes_written and file_data != bytes_written:
                         sftp.sftp_close(rf)
-                        raise LibsshSFTPException("Number of bytes [%s] read from remote file [%s]"
-                                                  " does not match number of bytes [%s] written to local file [%s]"
-                                                  " due to error [%s]"
-                                                  % (file_data, remote_file, bytes_written, local_file, self._get_sftp_error_str()))
+                        raise LibsshSFTPException(
+                            "Number of bytes [%s] read from remote file [%s]"
+                            " does not match number of bytes [%s] written to"
+                            " local file [%s] due to error [%s]"
+                            % (
+                                file_data,
+                                remote_file,
+                                bytes_written,
+                                local_file,
+                                self._get_sftp_error_str(),
+                            ),
+                        )
         finally:
             if read_buffer is not NULL:
                 PyMem_Free(read_buffer)
