@@ -24,7 +24,10 @@ from pylibsshext.errors cimport LibsshSFTPException
 from pylibsshext.session cimport get_libssh_session
 
 
-SFTP_MAX_CHUNK = 32_768  # 32kB
+# The maximum SFTP chunk size we attempt to transfer in a single SFTP packet.
+# The value 32kB is a safe fallback when we cannot determine better value from
+# the server, for example using limits@openssh.com (since libssh 0.11.0).
+SFTP_MAX_CHUNK = 32_768
 
 
 MSG_MAP = {
