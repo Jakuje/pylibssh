@@ -2,7 +2,6 @@
 
 import os
 import random
-import string
 
 import pytest
 
@@ -34,10 +33,8 @@ def transmit_payload(request: pytest.FixtureRequest):
     reading/writing.
     """
     payload_len = request.param
-    random_bytes = [
-        ord(random.choice(string.printable)) for _ in range(payload_len)
-    ]
-    return bytes(random_bytes)
+    assert isinstance(payload_len, int)
+    return random.randbytes(payload_len)
 
 
 @pytest.fixture
