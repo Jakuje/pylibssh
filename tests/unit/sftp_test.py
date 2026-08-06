@@ -21,11 +21,21 @@ def sftp_session(ssh_client_session):
 
 
 @pytest.fixture(
-    params=(32, SFTP_MAX_CHUNK + 1),
-    ids=('small-payload', 'large-payload'),
+    params=(
+        0,
+        32,
+        SFTP_MAX_CHUNK + 1,
+    ),
+    ids=(
+        'empty-payload',
+        'small-payload',
+        'large-payload',
+    ),
 )
 def transmit_payload(request: pytest.FixtureRequest) -> bytes:
     """Generate binary test payloads of assorted sizes.
+
+    The choice 0 results in empty file.
 
     The choice 32 is arbitrary small value.
 
