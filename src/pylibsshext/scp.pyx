@@ -90,7 +90,7 @@ cdef class SCP:
                     c_buf = read_buffer
 
                     # Write to the open file
-                    rc = libssh.ssh_scp_write(scp, c_buf, read_bytes)
+                    rc = libssh.ssh_scp_write(scp, c_buf, len(read_buffer))
                     if rc != libssh.SSH_OK:
                         raise LibsshSCPException("Can't write to remote file: %s" % self._get_ssh_error_str())
                     remaining_bytes_to_read -= read_bytes
