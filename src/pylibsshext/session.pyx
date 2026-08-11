@@ -175,9 +175,14 @@ cdef class Session(object):
             value_long = value
             libssh.ssh_options_set(self._libssh_session, key_m, &value_long)
         else:
+            # We need to keep temporary python variable before assigning it
+            # to c pointer, otherwise GC would collect the object and we
+            # would crash on use-after-free
+            # https://cython.readthedocs.io/en/latest/src/tutorial/strings.html#encoding-text-to-bytes
+            value_b = value
             if isinstance(value, str):
-                value = value.encode("utf-8")
-            c_buf = value
+                value_b = value.encode("utf-8")
+            c_buf = value_b
             libssh.ssh_options_set(self._libssh_session, key_m, c_buf)
             if key in OPTS_DIR_MAP:
                 self._opts[key] = value
