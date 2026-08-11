@@ -124,8 +124,16 @@ cdef class Channel:
     def recv(self, size=1024, stderr=0):
         return self.read_nonblocking(size=size, stderr=stderr)
 
-    def write(self, data):
+    def write(self, data: bytes) -> int:
+        """
+        Write data to the SSH channel.
+
+        :param data: The payload to write to the channel
+
+        :return: Number of bytes written
+        """
         cdef const char* c_buf = data
+
         written = libssh.ssh_channel_write(self._libssh_channel, c_buf, len(data))
         if written == libssh.SSH_ERROR:
             raise LibsshChannelException("Failed to write to ssh channel")
