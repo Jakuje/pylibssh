@@ -17,7 +17,6 @@
 
 from posix.fcntl cimport O_CREAT, O_RDONLY, O_TRUNC, O_WRONLY
 
-from cpython.bytes cimport PyBytes_AS_STRING
 from cpython.mem cimport PyMem_Free, PyMem_Malloc
 
 from pylibsshext.errors cimport LibsshSFTPException
@@ -71,6 +70,7 @@ cdef class SFTP:
         :type remote_file: str or bytes
         """
         cdef sftp.sftp_file rf
+        cdef const char* c_buf
         with open(local_file, "rb") as f:
             remote_file_b = remote_file
             if isinstance(remote_file_b, unicode):
@@ -93,8 +93,9 @@ cdef class SFTP:
             read_buffer = f.read(SFTP_MAX_CHUNK)
 
             while read_buffer != b"":
+                c_buf = read_buffer
                 length = len(read_buffer)
-                written = sftp.sftp_write(rf, PyBytes_AS_STRING(read_buffer), length)
+                written = sftp.sftp_write(rf, c_buf, length)
                 if written != length:
                     sftp.sftp_close(rf)
                     raise LibsshSFTPException(

@@ -17,8 +17,6 @@
 import inspect
 import logging
 
-from cpython.bytes cimport PyBytes_AS_STRING
-
 from pylibsshext.channel import Channel
 from pylibsshext.errors cimport LibsshSessionException
 from pylibsshext.logging import _initialize_logging, _set_level
@@ -158,6 +156,7 @@ cdef class Session(object):
         cdef int value_int
         cdef unsigned int value_uint
         cdef long value_long
+        cdef const char* c_buf
 
         key_m = None
         if key in OPTS_DIR_MAP:
@@ -178,7 +177,8 @@ cdef class Session(object):
         else:
             if isinstance(value, basestring):
                 value = value.encode("utf-8")
-            libssh.ssh_options_set(self._libssh_session, key_m, PyBytes_AS_STRING(value))
+            c_buf = value
+            libssh.ssh_options_set(self._libssh_session, key_m, c_buf)
             if key in OPTS_DIR_MAP:
                 self._opts[key] = value
 

@@ -19,7 +19,6 @@ import signal
 import time
 from io import BytesIO
 
-from cpython.bytes cimport PyBytes_AS_STRING
 from libc.string cimport memset
 
 from pylibsshext.errors cimport LibsshChannelException
@@ -126,7 +125,8 @@ cdef class Channel:
         return self.read_nonblocking(size=size, stderr=stderr)
 
     def write(self, data):
-        written = libssh.ssh_channel_write(self._libssh_channel, PyBytes_AS_STRING(data), len(data))
+        cdef const char* c_buf = data
+        written = libssh.ssh_channel_write(self._libssh_channel, c_buf, len(data))
         if written == libssh.SSH_ERROR:
             raise LibsshChannelException("Failed to write to ssh channel")
         return written
