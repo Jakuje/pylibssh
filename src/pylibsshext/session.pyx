@@ -175,7 +175,7 @@ cdef class Session(object):
             value_long = value
             libssh.ssh_options_set(self._libssh_session, key_m, &value_long)
         else:
-            if isinstance(value, basestring):
+            if isinstance(value, str):
                 value = value.encode("utf-8")
             c_buf = value
             libssh.ssh_options_set(self._libssh_session, key_m, c_buf)
