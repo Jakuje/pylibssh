@@ -20,3 +20,9 @@ introducing new `@`-syntax in memory files.
 
 See [PR_HYGIENE.md](PR_HYGIENE.md) for scope, changelog-fragment,
 and naming conventions maintainers consistently enforce in review.
+
+## Tooling
+
+See [CONTRIB_WORKFLOW_INFRA_TOOLING.md](CONTRIB_WORKFLOW_INFRA_TOOLING.md)
+for how to run tests, linters, and other project automation --
+always through `tox`, never by invoking the wrapped tools directly.
