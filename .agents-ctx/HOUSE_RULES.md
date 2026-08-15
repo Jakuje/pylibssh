@@ -16,6 +16,11 @@ See [HOUSE_STYLE.md](HOUSE_STYLE.md) for coding style and
 architectural/structural conventions, including the rule against
 introducing new `@`-syntax in memory files.
 
+## Testing
+
+See [TESTING.md](TESTING.md) for how tests are written and
+structured in this project.
+
 ## PR and commit hygiene
 
 See [PR_HYGIENE.md](PR_HYGIENE.md) for scope, changelog-fragment,
