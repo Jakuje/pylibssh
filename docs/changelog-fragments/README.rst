@@ -17,6 +17,22 @@ related details generates noise that is not particularly useful
 to the end-users most of the time. And so such details should be
 recorded in the Git history rather than a changelog.
 
+A changelog entry is not a restated commit message. It summarizes
+everything that changed *since the previous release* for a wide
+audience of end-users, in plain language and past tense -- while a
+commit message describes the delta *since the immediately
+preceding commit*, for fellow developers and contributors, and is
+conventionally written in the imperative mood ("Add", "Fix") with
+room for full technical detail and motivation. See `Keep a
+Changelog's guidance on commit logs vs changelogs`_ for more on
+this distinction.
+
+Unlike commit history -- which can be reworded, rebased, or
+squashed -- a changelog entry is a permanent historical record. It
+should not be retroactively removed even if the underlying code is
+later reverted: the contribution genuinely happened, and the
+record of it should stand.
+
 -----------------------------------------
 Alright! So how do I add a news fragment?
 -----------------------------------------
@@ -112,3 +128,6 @@ File ``docs/changelog-fragments/57.bugfix.rst``:
 
 .. _Towncrier philosophy:
    https://towncrier.readthedocs.io/en/stable/#philosophy
+
+.. _Keep a Changelog's guidance on commit logs vs changelogs:
+   https://keepachangelog.com/en/1.1.0/#bad-practices
