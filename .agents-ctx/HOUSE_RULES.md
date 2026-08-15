@@ -15,3 +15,8 @@ to use where.
 See [HOUSE_STYLE.md](HOUSE_STYLE.md) for coding style and
 architectural/structural conventions, including the rule against
 introducing new `@`-syntax in memory files.
+
+## PR and commit hygiene
+
+See [PR_HYGIENE.md](PR_HYGIENE.md) for scope, changelog-fragment,
+and naming conventions maintainers consistently enforce in review.
