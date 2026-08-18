@@ -1,11 +1,13 @@
 """Tests suite for channel."""
 
 import gc
+import pathlib
 import signal
 import time
 
 import pytest
 
+from pylibsshext.channel import Channel
 from pylibsshext.errors import LibsshChannelException
 from pylibsshext.session import Session
 
@@ -195,6 +197,45 @@ def test_is_eof(ssh_channel):
     ssh_channel.request_exec('exit 0')
     ssh_channel.poll(timeout=POLL_TIMEOUT)
     assert ssh_channel.is_eof
+
+
+@pytest.fixture
+def server_side_tmp_file_path(tmp_path: pathlib.Path) -> pathlib.Path:
+    """Create a new unique path that can be written."""
+    return tmp_path / 'test-file.txt'
+
+
+@pytest.fixture
+def _remote_tmp_file_data_writer(
+    server_side_tmp_file_path: pathlib.Path,
+    ssh_channel: Channel,
+) -> None:
+    """Run a server-side process writing network-received bytes to disk."""
+    ssh_channel.request_exec(f'cat > {server_side_tmp_file_path}')
+
+
+@pytest.mark.usefixtures('_remote_tmp_file_data_writer')
+def test_write_bytes(
+    server_side_tmp_file_path: pathlib.Path,
+    ssh_channel: Channel,
+) -> None:
+    """Test that write() takes bytes correctly."""
+    data_to_write = b'just pure ASCII bytes'
+    ssh_channel.write(data_to_write)
+    ssh_channel.send_eof()
+    ssh_channel.poll(timeout=POLL_TIMEOUT)
+    assert server_side_tmp_file_path.read_bytes() == data_to_write
+
+
+@pytest.mark.usefixtures('_remote_tmp_file_data_writer')
+def test_write_utf8_str(ssh_channel: Channel) -> None:
+    """Test that write() rejects non-bytes."""
+    data_to_write = '∮ E⋅da = Q,  n → ∞, ∑ f(i)'
+    error_msg = (
+        r"^Argument 'data' has incorrect type \(expected bytes, got str\)$"
+    )
+    with pytest.raises(TypeError, match=error_msg):
+        ssh_channel.write(data_to_write)
 
 
 def test_destructor(ssh_session_connect):
