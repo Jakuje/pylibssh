@@ -53,6 +53,13 @@ structured in this project.
 See [PR_HYGIENE.md](PR_HYGIENE.md) for scope, changelog-fragment,
 and naming conventions maintainers consistently enforce in review.
 
+## Don't ghost the reviewer
+
+See [DONT_GHOST_THE_REVIEWER.md](DONT_GHOST_THE_REVIEWER.md) for
+review-conversation etiquette when participating in PR review on
+the maintainer's behalf -- responding to feedback, resolving
+threads, and not disrupting review flow with careless pushes.
+
 ## Tooling
 
 See [CONTRIB_WORKFLOW_INFRA_TOOLING.md](CONTRIB_WORKFLOW_INFRA_TOOLING.md)
