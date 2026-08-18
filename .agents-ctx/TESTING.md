@@ -105,6 +105,18 @@ failure is expected, not just its type.
 Use pytest's built-in `tmp_path` fixture; don't hand-roll
 temp-directory setup/teardown.
 
+## Test payload data: prefer random bytes, once debugging is done
+
+Printable/readable payload data (e.g. hand-crafted ASCII strings)
+helped root-cause bugs when file-transfer implementations used to
+corrupt data -- readability mattered more than realism while
+chasing corruption bugs. Once an implementation is no longer
+prone to that class of bug, prefer `random.randbytes()`-style
+payloads instead: constructing large printable-string payloads is
+inefficient, and random bytes exercise the code more realistically
+at scale. This is a tradeoff that shifts with implementation
+maturity, not a blanket "always use random data" rule (PR #872).
+
 ## Every test and fixture has a one-line docstring
 
 Describing what it checks or provides, not restating the code,
