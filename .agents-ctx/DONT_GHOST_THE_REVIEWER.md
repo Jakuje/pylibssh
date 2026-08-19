@@ -24,6 +24,29 @@ literal timer or a hard gate -- it's a Pomodoro-style nudge,
 offered with the reasoning spelled out, not a silent forced wait.
 The operator decides whether to take it.
 
+## Don't leak your own harness into the PR body
+
+Agents commonly stick a "Verification"-style section into PR
+descriptions listing obvious, implied self-checks (e.g.
+"`pre-commit run --all-files` and `make doc-spelling` are
+clean") -- useful for a CI harness, not for a human reviewer.
+"The CI runs these properly, using a project-accepted infra...
+the fact that you managed to run the in-project infra locally
+does not really contribute any useful information to the
+context of the PR." (webknjaz, aio-libs/multidict#1393,
+issuecomment-5342964393) Assume the reviewer already knows the
+project's conventional, integrated tooling and CI serve as the
+harness -- don't restate that it was used.
+
+Reserve the PR body for what CI *wouldn't* catch: something
+surfaced during exploration, troubleshooting, or debugging that
+isn't "part of tribal knowledge and standard practices" and a
+reviewer genuinely couldn't infer. Leaking harness internals
+"would needlessly pollute the reviewer's context, distract them
+from what the scope is and delay the merge" -- point out the
+one thing that actually needs explaining, not everything that
+was checked.
+
 ## Review comments are an invitation to a conversation, not a command
 
 A reviewer raising a question, a concern, or a tradeoff is opening a

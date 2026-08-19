@@ -29,6 +29,13 @@ the patches maintainable, having Git tree tell a story and contain
 sufficient context. Be accountable." (PR #790) -- trim anything not
 directly related to the stated change before proposing it.
 
+The same restraint applies to the PR description, not just the
+diff -- see
+[DONT_GHOST_THE_REVIEWER.md](DONT_GHOST_THE_REVIEWER.md) for why
+internal self-check noise (e.g. a "Verification" section
+restating that conventional tooling was run) doesn't belong
+there either.
+
 ## Every change needs a changelog fragment
 
 One fragment per PR, filed under `docs/changelog-fragments/` as
