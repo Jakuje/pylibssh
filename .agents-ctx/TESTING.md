@@ -117,6 +117,14 @@ inefficient, and random bytes exercise the code more realistically
 at scale. This is a tradeoff that shifts with implementation
 maturity, not a blanket "always use random data" rule (PR #872).
 
+## Type annotations on new tests
+
+New test functions and fixtures need type annotations too --
+parameters and return types -- same as any other new code. See
+[PR_HYGIENE.md](PR_HYGIENE.md) for the full rule, including why
+this doesn't apply retroactively to the existing (currently
+unannotated) test suite.
+
 ## Every test and fixture has a one-line docstring
 
 Describing what it checks or provides, not restating the code,

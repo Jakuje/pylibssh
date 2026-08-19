@@ -67,13 +67,28 @@ describe what a function does; motivation/rationale, if needed,
 belongs in a comment or the PR description, not the docstring
 (PR #658).
 
+## Type annotations on new code
+
+New code -- including new tests -- needs type annotations:
+parameter types and return types, using `import typing as _t`
+for standard-library constructs (e.g. `_t.Optional[...]`). This
+isn't retrofitted into existing/legacy code as a side effect of
+an unrelated change -- that's a deliberate, standalone future
+effort, not something to bundle into whatever else a PR is
+doing.
+
+This is a real, acknowledged gap today: `.ruff.toml` disables
+`ANN001`/`ANN201`/`ANN202`/`ANN401` with an explicit `# FIXME:
+These flake8-annotations errors need fixing and removal`
+comment, and none of the current test functions in `tests/` are
+annotated. Don't read the absence of annotations in existing
+code as license to skip them in new code -- it's tracked debt,
+not the house style.
+
 ## Common micro-conventions flagged in review
 
 - f-strings over `.format()`/`%` formatting.
 - `contextlib.suppress()` over bare `try`/`except: pass`.
 - No monkey-patching stdlib.
-- Type annotations required on new/touched code; alias
-  `import typing as _t` for standard-library typing constructs
-  (e.g. `_t.Optional[...]`).
 - Public vs. private intent must be explicit -- prefix with `_` if
   not part of the public API.
