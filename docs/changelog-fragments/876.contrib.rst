@@ -1,0 +1,1 @@
+Added the UBI 9.8 container image to the CI test matrix -- by :user:`Jakuje`.

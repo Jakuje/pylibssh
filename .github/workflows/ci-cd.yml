@@ -958,6 +958,8 @@ jobs:
           registry: registry.access.redhat.com
         - tag: ubi9/ubi:9.7
           registry: registry.access.redhat.com
+        - tag: ubi9/ubi:9.8
+          registry: registry.access.redhat.com
         - tag: centos/centos:stream9
           registry: quay.io
         - tag: centos/centos:stream10
