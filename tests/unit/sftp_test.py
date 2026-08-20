@@ -8,6 +8,9 @@ import pytest
 from pylibsshext.sftp import SFTP_MAX_CHUNK
 
 
+SMALL_PAYLOAD = 32
+
+
 @pytest.fixture
 def sftp_session(ssh_client_session):
     """Initialize an SFTP session and destroy it after testing."""
@@ -21,27 +24,24 @@ def sftp_session(ssh_client_session):
 
 @pytest.fixture(
     params=(
-        0,
-        32,
-        SFTP_MAX_CHUNK + 1,
-    ),
-    ids=(
-        'empty-payload',
-        'small-payload',
-        'large-payload',
+        pytest.param(
+            0,  # empty file
+            id='empty-payload',
+        ),
+        pytest.param(
+            SMALL_PAYLOAD,  # arbitrary small value
+            id='small-payload',
+        ),
+        pytest.param(
+            # 1B larger than chunk size in sftp to make sure we exercise
+            # at least two rounds of reading/writing
+            SFTP_MAX_CHUNK + 1,
+            id='large-payload',
+        ),
     ),
 )
 def transmit_payload(request: pytest.FixtureRequest) -> bytes:
-    """Generate binary test payloads of assorted sizes.
-
-    The choice 0 results in empty file.
-
-    The choice 32 is arbitrary small value.
-
-    The choice SFTP_MAX_CHUNK + 1 (32kB + 1B) is meant to be 1B larger than the chunk
-    size used in :file:`sftp.pyx` to make sure we exercise at least two rounds of
-    reading/writing.
-    """
+    """Generate binary test payloads of assorted sizes."""
     payload_len = request.param
     assert isinstance(payload_len, int)
     return random.randbytes(payload_len)
