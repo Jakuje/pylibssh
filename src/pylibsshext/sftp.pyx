@@ -17,6 +17,12 @@
 
 from posix.fcntl cimport O_CREAT, O_RDONLY, O_TRUNC, O_WRONLY
 
+import typing as _t  # noqa: WPS111
+
+
+if _t.TYPE_CHECKING:
+    from types import TracebackType
+
 from cpython.mem cimport PyMem_Free, PyMem_Malloc
 
 from pylibsshext.errors cimport LibsshSFTPException
@@ -69,44 +75,25 @@ cdef class SFTP:
         :param remote_file: The path to upload the file on the remote system
         :type remote_file: str or bytes
         """
-        cdef sftp.sftp_file rf
         cdef const char* c_buf
+        cdef _RemoteFile remote
         with open(local_file, "rb") as f:
-            remote_file_b = remote_file
-            if isinstance(remote_file_b, unicode):
-                remote_file_b = remote_file.encode("utf-8")
-
-            rf = sftp.sftp_open(
-                self._libssh_sftp_session,
-                remote_file_b,
-                O_WRONLY | O_CREAT | O_TRUNC,
-                sftp.S_IRWXU,
-            )
-            if rf is NULL:
-                raise LibsshSFTPException(
-                    "Opening remote file [%s] for write failed with error [%s]"
-                    % (
-                        remote_file,
-                        self._get_sftp_error_str()
-                    ),
-                )
-            read_buffer = f.read(SFTP_MAX_CHUNK)
-
-            while read_buffer != b"":
-                c_buf = read_buffer
-                length = len(read_buffer)
-                written = sftp.sftp_write(rf, c_buf, length)
-                if written != length:
-                    sftp.sftp_close(rf)
-                    raise LibsshSFTPException(
-                        "Writing to remote file [%s] failed with error [%s]"
-                        % (
-                            remote_file,
-                            self._get_sftp_error_str(),
-                        )
-                    )
+            with _RemoteFile(self, remote_file, O_WRONLY | O_CREAT | O_TRUNC) as remote:
                 read_buffer = f.read(SFTP_MAX_CHUNK)
-            sftp.sftp_close(rf)
+
+                while read_buffer != b"":
+                    c_buf = read_buffer
+                    length = len(read_buffer)
+                    written = sftp.sftp_write(remote._fd, c_buf, length)
+                    if written != length:
+                        raise LibsshSFTPException(
+                            "Writing to remote file [%s] failed with error [%s]"
+                            % (
+                                remote_file,
+                                self._get_sftp_error_str(),
+                            )
+                        )
+                    read_buffer = f.read(SFTP_MAX_CHUNK)
 
     def get(self, remote_file, local_file):
         """
@@ -118,7 +105,7 @@ cdef class SFTP:
         :param local_file: The path on the local file system to place the downloaded file
         :type local_file: str or os.PathLike
         """
-        cdef sftp.sftp_file rf
+        cdef _RemoteFile remote
         cdef char *read_buffer = NULL
         cdef sftp.sftp_attributes attrs
 
@@ -136,57 +123,44 @@ cdef class SFTP:
                 ),
             )
         file_size = attrs.size
+        with _RemoteFile(self, remote_file, O_RDONLY) as remote:
+            try:
+                with open(local_file, 'wb') as f:
+                    buffer_size = min(SFTP_MAX_CHUNK, file_size)
+                    read_buffer = <char *>PyMem_Malloc(buffer_size)
+                    if read_buffer is NULL:
+                        raise LibsshSFTPException("Memory allocation error")
 
-        rf = sftp.sftp_open(self._libssh_sftp_session, remote_file_b, O_RDONLY, sftp.S_IRWXU)
-        if rf is NULL:
-            raise LibsshSFTPException(
-                "Opening remote file [%s] for read failed with error [%s]"
-                % (
-                    remote_file,
-                    self._get_sftp_error_str(),
-                ),
-            )
+                    while True:
+                        file_data = sftp.sftp_read(remote._fd, <void *>read_buffer, sizeof(char) * buffer_size)
+                        if file_data == 0:
+                            break
+                        elif file_data < 0:
+                            raise LibsshSFTPException(
+                                "Reading data from remote file [%s] failed with error [%s]"
+                                % (
+                                    remote_file,
+                                    self._get_sftp_error_str(),
+                                ),
+                            )
 
-        try:
-            with open(local_file, 'wb') as f:
-                buffer_size = min(SFTP_MAX_CHUNK, file_size)
-                read_buffer = <char *>PyMem_Malloc(buffer_size)
-                if read_buffer is NULL:
-                    raise LibsshSFTPException("Memory allocation error")
-
-                while True:
-                    file_data = sftp.sftp_read(rf, <void *>read_buffer, sizeof(char) * buffer_size)
-                    if file_data == 0:
-                        break
-                    elif file_data < 0:
-                        sftp.sftp_close(rf)
-                        raise LibsshSFTPException(
-                            "Reading data from remote file [%s] failed with error [%s]"
-                            % (
-                                remote_file,
-                                self._get_sftp_error_str(),
-                            ),
-                        )
-
-                    bytes_written = f.write(read_buffer[:file_data])
-                    if bytes_written and file_data != bytes_written:
-                        sftp.sftp_close(rf)
-                        raise LibsshSFTPException(
-                            "Number of bytes [%s] read from remote file [%s]"
-                            " does not match number of bytes [%s] written to"
-                            " local file [%s] due to error [%s]"
-                            % (
-                                file_data,
-                                remote_file,
-                                bytes_written,
-                                local_file,
-                                self._get_sftp_error_str(),
-                            ),
-                        )
-        finally:
-            if read_buffer is not NULL:
-                PyMem_Free(read_buffer)
-        sftp.sftp_close(rf)
+                        bytes_written = f.write(read_buffer[:file_data])
+                        if bytes_written and file_data != bytes_written:
+                            raise LibsshSFTPException(
+                                "Number of bytes [%s] read from remote file [%s]"
+                                " does not match number of bytes [%s] written to"
+                                " local file [%s] due to error [%s]"
+                                % (
+                                    file_data,
+                                    remote_file,
+                                    bytes_written,
+                                    local_file,
+                                    self._get_sftp_error_str(),
+                                ),
+                            )
+            finally:
+                if read_buffer is not NULL:
+                    PyMem_Free(read_buffer)
 
     def close(self):
         if self._libssh_sftp_session is not NULL:
@@ -198,3 +172,46 @@ cdef class SFTP:
         if error in MSG_MAP and error != sftp.SSH_FX_FAILURE:
             return MSG_MAP[error]
         return "Generic failure: %s" % self.session._get_session_error_str()
+
+
+cdef class _RemoteFile:
+    """Helper class managing lifetime of remote file handle."""
+    def __cinit__(self, sftp_obj: SFTP, path: str | bytes, int flags) -> None:
+        path_b = path
+        if isinstance(path_b, str):
+            path_b = path.encode("utf-8")
+        self._fd = sftp.sftp_open(
+            sftp_obj._libssh_sftp_session,
+            path_b,
+            flags,
+            sftp.S_IRWXU,
+        )
+        if self._fd is NULL:
+            mode = "writing" if flags & O_WRONLY else "reading"
+            raise LibsshSFTPException(
+                "Opening remote file [%s] for %s failed with error [%s]"
+                % (
+                    path,
+                    mode,
+                    sftp_obj._get_sftp_error_str(),
+                ),
+            )
+
+    def __dealloc__(self) -> None:
+        if self._fd is not NULL:
+            sftp.sftp_close(self._fd)
+            self._fd = NULL
+
+    def __enter__(self) -> _t.Self:
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> bool | None:
+        if self._fd is not NULL:
+            sftp.sftp_close(self._fd)
+            self._fd = NULL
+        return False

@@ -20,6 +20,9 @@ from pylibsshext.includes cimport libssh, sftp
 from pylibsshext.session cimport Session
 
 
+cdef class _RemoteFile:
+    cdef sftp.sftp_file _fd
+
 cdef class SFTP:
     cdef Session session
     cdef sftp.sftp_session _libssh_sftp_session
