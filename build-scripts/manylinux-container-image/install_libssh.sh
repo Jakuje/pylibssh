@@ -80,7 +80,7 @@ export OPENSSL_ROOT_DIR="${PYCA_OPENSSL_PATH}"
 git clone \
     --depth=1 \
     -b "${LIB_NAME}-${LIB_VERSION}" \
-    https://git.libssh.org/projects/${LIB_NAME}.git \
+    https://gitlab.com/${LIB_NAME}/${LIB_NAME}-mirror.git \
     "${LIB_CLONE_DIR}"
 
 source activate-userspace-tools.sh
