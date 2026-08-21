@@ -17,7 +17,6 @@
 
 import os
 
-from cpython.bytes cimport PyBytes_AS_STRING
 from cpython.mem cimport PyMem_Free, PyMem_Malloc
 
 from pylibsshext.errors cimport LibsshSCPException
@@ -42,6 +41,7 @@ cdef class SCP:
         :param remote_file: The path on the remote host where the file should be placed
         :type remote_file: str
         """
+        cdef const char* c_buf
         remote_file_b = remote_file
         if isinstance(remote_file_b, unicode):
             remote_file_b = remote_file.encode("utf-8")
@@ -87,9 +87,10 @@ cdef class SCP:
                     # Read the chunk from local file
                     read_bytes = min(remaining_bytes_to_read, read_buffer_size)
                     read_buffer = f.read(read_bytes)
+                    c_buf = read_buffer
 
                     # Write to the open file
-                    rc = libssh.ssh_scp_write(scp, PyBytes_AS_STRING(read_buffer), read_bytes)
+                    rc = libssh.ssh_scp_write(scp, c_buf, len(read_buffer))
                     if rc != libssh.SSH_OK:
                         raise LibsshSCPException("Can't write to remote file: %s" % self._get_ssh_error_str())
                     remaining_bytes_to_read -= read_bytes
