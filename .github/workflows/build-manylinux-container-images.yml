@@ -22,7 +22,14 @@ jobs:
   build:
     runs-on: ${{ matrix.IMAGE.HOST_OS || 'ubuntu-latest' }}
 
-    timeout-minutes: 50
+    timeout-minutes: >-
+      ${{
+        case(
+          matrix.IMAGE.ARCH == 'ppc64le', 60,
+          matrix.IMAGE.ARCH == 's390x', 50,
+          8,
+        )
+      }}
 
     strategy:
       matrix:
